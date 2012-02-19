@@ -1,0 +1,26 @@
+{
+	"name": "natxet/OperaCore",
+	"version": "0.0.2",
+	"type": "library",
+	"description": "The core of the Opera PHP Framework, based on Symfony components. MVC + i18n everywhere",
+	"keywords": ["symfony","php","frameworks"],
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Natxet",
+			"email": "icofre@gmail.com",
+			"homepage": "https://github.com/natxet"
+		}
+	],
+	"repositories": {
+        "Github": {
+            "vcs": {
+                "url": "git://github.com/natxet/OperaCore.git"
+		}
+	}
+},
+	"require": {
+		"php": ">=5.3"
+	}
+}
+
