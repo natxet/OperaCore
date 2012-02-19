@@ -1,0 +1,190 @@
+<link rel="stylesheet" type="text/css" href="http://shjs.sourceforge.net/sh_style.css">
+
+<script type="text/javascript" src="http://shjs.sourceforge.net/sh_main.min.js"></script>
+<script type="text/javascript" src="http://shjs.sourceforge.net/lang/sh_sql.js"></script>
+
+<style type="text/css">
+
+	#profile {
+		font-size: 0.7em;
+		margin: 20px auto;
+		width: 90%;
+	}
+
+	#profile table {
+		width: 100%;
+		margin: 20px 0;
+		padding: 0;
+	}
+
+	#profile td, #profile th {
+		border: 1px solid #ccc;
+		padding: 10px;
+	}
+
+	#profile th {
+		background-color: #ccc;
+		font-size: 1.2em;
+	}
+
+	#profile .slow {
+		background-color: #F6CED8;
+	}
+
+	#profile pre {
+		font-family: monospace;
+	}
+
+	#profile dt {
+		font-weight: bold;
+	}
+
+	#profile dd {
+		font-family: monospace;
+		display: block;
+		padding: 10px;
+		margin: 10px 0;
+		border: 1px dotted #f4a460;
+	}
+
+	#profile strong {
+		font-weight: bold;
+	}
+
+	#profile caption {
+		border-bottom: 2px solid #444;
+		margin: 0;
+		padding-bottom: 5px;
+		font-size: 1.4em;
+		font-weight: bold;
+		white-space: nowrap;
+		cursor: pointer;
+	}
+
+	#profile h2 {
+		display: block;
+		width: 100%;
+		font-family: 'Helvetica Neue', Arial, sans-serif;
+		font-size: 1.6em;
+		background-color: #C1141D;
+		color: #fff;
+		padding: 2px;
+		margin: 20px 0 0 0;
+		cursor: pointer;
+	}
+</style>
+
+<div id="profile">
+	<h2>Profile</h2>
+	<div id="profile_contents">
+		<table id="checkpoints">
+			<caption>
+				Checkpoints profile
+			</caption>
+			<thead>
+			<tr>
+				<th>Message</th>
+				<th>Time</th>
+				<th>Memory</th>
+			</tr>
+			</thead>
+			<tbody>
+			{% for checkpoint in checkpoints %}
+			<tr>
+				<td>
+					{{checkpoint.message}}
+				</td>
+				<td>
+					{{checkpoint.time}} ms
+				</td>
+				<td>
+					{{checkpoint.memory}} KB
+				</td>
+			</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+
+		<table id="templates_profile">
+			<caption>
+				Templates profile
+			</caption>
+			<thead>
+			<tr>
+				<th>Template</th>
+				<th>Params</th>
+			</tr>
+			</thead>
+			<tbody>
+			{% for tpl in templates_profile %}
+			<tr>
+				<td>
+					{{tpl.template}}
+				</td>
+				<td>
+					<dl>
+						{% for key, value in tpl.context %}
+						<dt>{{key}}</dt>
+						<dd>{% debug value %}</dd>
+						{% endfor %}
+					</dl>
+				</td>
+			</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+
+		<table id="models_profile">
+			<caption>
+				Models profile
+			</caption>
+			<thead>
+			<tr>
+				<th>Statement</th>
+				<th>Backtrace</th>
+			</tr>
+			</thead>
+			<tbody>
+			{% for statement in models_profile %}
+			<tr class="{% if statement.miliseconds > slow_query_miliseconds %} slow{% endif %}">
+				<td>
+					<pre class="sh_sql">{{statement.statement}}</pre>
+				</td>
+				<td>
+					Execution time: {{statement.miliseconds}} ms
+					<br/>
+					<strong>{{statement.backtrace.classname}}()->{{statement.backtrace.function}}()</strong>
+					<br/>
+					{{statement.backtrace.file}} line {{statement.backtrace.line}}
+					<br/><br/>
+					<dl>
+						<dt>Params</dt>
+						<dd>{% debug statement.params %}</dd>
+					</dl>
+				</td>
+			</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<script type="text/javascript">
+	if (typeof(jQuery) == 'undefined') {
+	}
+	else {
+	$(document).ready(function () {
+		sh_highlightDocument();
+
+		$('#profile thead, #profile tbody').hide();
+
+		$('#profile caption').click( function () {
+			$(this).parent().find('thead, tbody').toggle();
+		});
+
+		$('#profile h2').click( function () {
+			$('#profile').toggle();
+		});
+	});
+	}
+</script>
