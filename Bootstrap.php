@@ -2,7 +2,10 @@
 
 namespace natxet\OperaCore;
 
-require( 'autoload.php' );
+define( 'OPERACORE_PATH', realpath( __DIR__ ) );
+define( 'VENDOR_PATH', realpath( dirname( dirname( __DIR__ ) ) ) );
+
+require( VENDOR_PATH . '/.composer/autoload.php' );
 
 Profile::Checkpoint( 'Begin of OperaCore' );
 
@@ -26,8 +29,6 @@ class Bootstrap
 
 	public function __construct()
 	{
-		$this->defineFW();
-
 		$this->container = new Container();
 
 		$this->defineEnv( $this->container );
@@ -36,15 +37,6 @@ class Bootstrap
 		$this->container->init();
 
 		Profile::Checkpoint( 'Container has been Created' );
-	}
-
-	/**
-	 * Defines the FW environment globals
-	 */
-	protected function defineFW()
-	{
-		define( 'OPERACORE_PATH', realpath( __DIR__ ) );
-		define( 'VENDOR_PATH', realpath( dirname( __DIR__ ) ) );
 	}
 
 	/**
