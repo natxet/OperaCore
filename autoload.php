@@ -1,21 +1,37 @@
 <?php
 
+if (!class_exists('Composer\\Autoload\\ClassLoader', false)) {
+	require( VENDOR_PATH .'/.composer/ClassLoader.php' );
+}
 
-$prefixes = array
-(
-	'Twig_Extensions_' => __DIR__ . '/../../twig-extensions/lib',
-	'Twig_'            => __DIR__ . '/../../twig/lib',
-);
+$__composer_autoload_init = function() {
 
-$vendors_path = __DIR__ . '/../../';
-$namespaces = array
-(
-	'Symfony' => $vendors_path,
-	'Pimple' => $vendors_path,
-	'natxet' => $vendors_path
-);
+	$loader = new \Composer\Autoload\ClassLoader();
 
-/* Don't edit bellow this line */
+	$map = require (VENDOR_PATH .'/.composer/autoload_namespaces.php');
+
+	foreach ($map as $namespace => $path) {
+		//var_dump($namespace, $path);
+		$loader->add($namespace, $path);
+	}
+
+	$apps_path = realpath( __DIR__ . '/../../../app/' );
+
+	foreach ( new \DirectoryIterator( $apps_path ) as $file )
+	{
+		if( $file->isDir() )
+		{
+			$loader->add( $file->getFilename(), $apps_path);
+		}
+	}
+
+	$loader->register();
+
+	return $loader;
+};
+
+return $__composer_autoload_init();
+
 
 $apps_path = __DIR__ . '/../../../app/';
 
@@ -27,8 +43,3 @@ foreach ( new \DirectoryIterator( $apps_path ) as $file )
 	}
 }
 
-require( __DIR__ . '/../../Symfony/Component/ClassLoader/UniversalClassLoader.php' );
-$classLoader = new \Symfony\Component\ClassLoader\UniversalClassLoader();
-$classLoader->registerNamespaces( $namespaces );
-$classLoader->registerPrefixes( $prefixes );
-$classLoader->register();

@@ -2,7 +2,7 @@
 
 namespace natxet\OperaCore;
 
-class Container extends \Pimple\Pimple
+class Container extends \Pimple
 {
 	public function __construct( array $values = array() )
 	{

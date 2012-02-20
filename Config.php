@@ -23,6 +23,7 @@ class Config
 	protected function parse_ini( $domain, $env, $path )
 	{
 		$ext                    = self::FILE_EXTENSION;
+		if( !file_exists( "$path/$domain.$ext" ) ) return false;
 		$this->domains[$domain] = parse_ini_file( "$path/$domain.$ext", 1 );
 
 		// in environments different than pro, you can extend config file
@@ -87,9 +88,31 @@ class Config
 	public function get( $domain, $group = NULL, $key = NULL )
 	{
 
-		if ( is_null( $group ) ) return $this->domains_parsed[$domain];
-		elseif ( is_null( $key ) ) return $this->domains_parsed[$domain][$group];
-		else						return $this->domains_parsed[$domain][$group][$key];
+		if ( is_null( $group ) )
+		{
+			if( isset($this->domains_parsed[$domain])
+				&& is_array($this->domains_parsed[$domain]) )
+			{
+				return $this->domains_parsed[$domain];
+			}
+		}
+		elseif ( is_null( $key ) )
+		{
+			if( isset($this->domains_parsed[$domain][$group])
+				&& is_array($this->domains_parsed[$domain][$group]) )
+			{
+				return $this->domains_parsed[$domain][$group];
+			}
+		}
+		else
+		{
+			if( isset($this->domains_parsed[$domain][$group][$key]) )
+			{
+				return $this->domains_parsed[$domain][$group][$key];
+			}
+		}
+
+		return array();
 	}
 
 	public function write_ini( $sectionsarray, $filename, $prefix = NULL )

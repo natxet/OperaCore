@@ -5,7 +5,7 @@ namespace natxet\OperaCore;
 define( 'OPERACORE_PATH', realpath( __DIR__ ) );
 define( 'VENDOR_PATH', realpath( dirname( dirname( __DIR__ ) ) ) );
 
-require( VENDOR_PATH . '/.composer/autoload.php' );
+require( 'autoload.php' );
 
 Profile::Checkpoint( 'Begin of OperaCore' );
 
