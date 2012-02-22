@@ -86,7 +86,7 @@ class Bootstrap
 	}
 
 	/**
-	 * @return \Framework\Container
+	 * @return Container
 	 */
 	public function getContainer()
 	{

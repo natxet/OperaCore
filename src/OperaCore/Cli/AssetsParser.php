@@ -93,7 +93,7 @@ class AssetsParser extends \OperaCore\CliScript
 
 			$app_asset_name = preg_replace( '/(.*)(\.[a-z]+)/', '\1.fw\2', $asset );
 			$app_asset      = "$app_public_path$extension/$app_asset_name";
-			$fw_asset       = "$app_public_path../../../vendor/Framework/public/$extension/$asset";
+			$fw_asset       = OPERACORE_PATH . "/public/$extension/$asset";
 
 			if ( !file_exists( $app_asset ) )
 			{
@@ -177,10 +177,9 @@ class AssetsParser extends \OperaCore\CliScript
 		switch ( $type )
 		{
 			case 'js':
-				require_once( __DIR__ . '/../../JShrink/JShrink.php' );
 				return \JShrink::minify( $string );
 			case 'css':
-				return \Framework\CssMinifier::minify( $string );
+				return \CssMinifier::minify( $string );
 			default:
 				return '';
 		}
