@@ -24,12 +24,32 @@ class Router
 	/**
 	 * @var string
 	 */
+	protected $scheme;
+
+	/**
+	 * @var string
+	 */
+	protected $hostname;
+
+	/**
+	 * @var string
+	 */
+	protected $domain;
+
+	/**
+	 * @var string
+	 */
+	protected $subdomain;
+
+	/**
+	 * @var string
+	 */
 	protected $uri;
 
 	public function __construct( $c, $routes )
 	{
 		$this->i18n = $c['I18n'];
-		$this->uri  = $c['Request']->getRequestUri();
+		$this->processRequest( $c['Request'] );
 
 		$this->parseRoutes( $routes );
 	}
@@ -37,32 +57,55 @@ class Router
 	public function parseRoutes( $routes )
 	{
 		// foreach route already in the attribute
-		foreach ( $routes as $k => $v )
+		foreach ( $routes as $route_key => $route_config )
 		{
 			// first, translate  the route
-			$routes[$k]['pattern_i18n'] = $this->i18nParse( $routes[$k]['pattern'] );
+			$route_config['pattern_i18n'] = $this->i18nParse( $route_config['pattern'] );
 
-			$regex = $routes[$k]['pattern_i18n'];
-
-			// Find al params in the pattern for the route
-			preg_match_all( '/%([a-z_]+)%/', $regex, $params_matches );
-			$routes[$k]['params'] = $params_matches[1];
-
-			// Foreach param, save it and replace it in the pattern with a regex
-			foreach ( $routes[$k]['params'] as $param )
+			if ( array_key_exists( 'subdomain', $route_config ) )
 			{
-				$p_regex = ( array_key_exists( 'p.' . $param, $v ) ) ? $v['p.' . $param] : self::DEFAULT_PARAM_REGEX;
-				$regex   = str_replace( "%$param%", "($p_regex)", $regex );
+				$route_config['subdomain_i18n'] = $this->i18nParse( $route_config['subdomain'] );
 			}
 
-			// It prepares the whole regex with limiters and adds profile suffix
-			$regex = '/^' . str_replace( '/', '\\/', $regex ) . '(?:' . self::PROFILE_SUFFIX . ')?$/';
-
-			// Saves the regex for later access
-			$routes[$k]['pattern_regex'] = $regex;
+			$routes[$route_key] = $this->separateParamsFromRegex( $route_config );
 		}
 
 		$this->routes = $routes;
+	}
+
+	protected function separateParamsFromRegex( $r )
+	{
+		// This will be the regex for comparing, not for using for generating urls: just for finding the route matching
+		$regex = $r['pattern_i18n'];
+		// subdomains, only if defined
+		$s_regex = array_key_exists( 'subdomain', $r ) ? $r['subdomain_i18n'] : '';
+
+		// Find al params in the pattern for the route
+		preg_match_all( '/%([a-z_]+)%/', $s_regex . '|' . $regex, $params_matches );
+		$r['params'] = $params_matches[1];
+
+		// Foreach param, save it and replace it in the pattern with a regex
+		foreach ( $r['params'] as $param )
+		{
+			// if we defined a type of regex for this variable we will substitute it. If not, the common regex (a-z0-9-)
+			$p_regex = ( array_key_exists( 'p.' . $param, $r ) ) ? $r['p.' . $param] : self::DEFAULT_PARAM_REGEX;
+			$regex   = str_replace( "%$param%", "($p_regex)", $regex );
+			$s_regex = str_replace( "%$param%", "($p_regex)", $s_regex );
+		}
+
+		// It prepares the whole regex with limiters and adds profile suffix
+		$regex   = '/^' . str_replace( '/', '\\/', $regex ) . '(?:' . self::PROFILE_SUFFIX . ')?$/';
+		$s_regex = '/^' . str_replace( '/', '\\/', $s_regex ) . '$/';
+
+		// Saves the regex for later access
+		$r['pattern_regex'] = $regex;
+
+		if ( array_key_exists( 'subdomain', $r ) )
+		{
+			$r['subdomain_regex'] = $s_regex;
+		}
+
+		return $r;
 	}
 
 	public function i18nParse( $string )
@@ -70,31 +113,80 @@ class Router
 		return $this->i18n->parseTranlations( $string );
 	}
 
-	public function getPath( $route, $params = array() )
+	/**
+	 * @param       $route_key string the route key
+	 * @param array $params
+	 *
+	 * @return string
+	 */
+	public function getPath( $route_key, $params = array() )
 	{
-		$r = $this->routes[$route];
-		$uri = $r['pattern_i18n'];
+		$r        = $this->routes[$route_key];
+		$uri      = $r['pattern_i18n'];
+		$hostname = isset( $r['subdomain_i18n'] ) ? $r['subdomain_i18n'] . '.' . $this->domain : $this->domain;
+
+		$path = $this->composeAbsoluteURL( $hostname, $uri );
 
 		foreach ( $r['params'] as $param )
 		{
 			$param_value = array_key_exists( $param, $params ) ? $params[$param] : '';
-			$uri = str_replace( "%$param%", $param_value, $uri );
+			$path        = str_replace( "%$param%", $param_value, $path );
 		}
 		// TODO: chapuza
-		$uri = str_replace( array('(?:/p)?', '(?::)?','(?:',')?'), '', $uri );
+		$path = str_replace( array( '(?:/p)?', '(?::)?', '(?:', ')?' ), '', $path );
+		return $path;
+	}
 
-		return $uri;
+	protected function composeAbsoluteURL( $hostname, $uri )
+	{
+		return $this->scheme . '://' . $hostname . $uri;
+	}
+
+	/**
+	 * @param $request \Symfony\Component\HttpFoundation\Request
+	 */
+	protected function processRequest( $request )
+	{
+		$this->uri      = $request->getRequestUri();
+		$this->hostname = $request->getHttpHost();
+		$this->scheme   = $request->getScheme();
+
+		// detect subdomain (does not suport more than 3 level domains!)
+		preg_match( '/^([^\.]+)\.[^\.]+\.[^\.]+$/', $this->hostname, $matches );
+		if ( isset( $matches[1] ) ) $this->subdomain = $matches[1];
+		else $this->subdomain = NULL;
+
+		$this->domain = $this->subdomain ? str_replace( $this->subdomain . '.', '', $this->hostname ) : $this->hostname;
 	}
 
 	public function getRoute()
 	{
 		foreach ( $this->routes as $k => $v )
 		{
+			Profile::collect( 'Route', "trying route $k" );
+			// so this is a specific route for a subdomain
+			if ( isset( $v['subdomain'] ) )
+			{
+				if ( !preg_match_all( $v['subdomain_regex'], $this->subdomain, $matches_subdomain ) )
+				{
+					Profile::collect(
+						'Route', " - $this->subdomain subdomain does not match " . $v['subdomain_regex']
+					);
+					continue;
+				}
+				Profile::collect( 'Route', " - $this->subdomain subdomain DOES match " . $v['subdomain_regex'] );
+			}
+			else
+			{
+				$matches_subdomain = array();
+			}
 			if ( preg_match_all( $v['pattern_regex'], $this->uri, $matches ) )
 			{
+				$matches   = array_merge( $matches, $matches_subdomain );
 				$route_key = $k;
 				break;
 			}
+			Profile::collect( 'Route', " - $this->uri does not match " . $v['pattern_regex'] );
 		}
 
 		if ( !isset( $route_key ) )

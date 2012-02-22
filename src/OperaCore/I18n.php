@@ -51,7 +51,8 @@ class I18n
 
 		foreach ( $locales_patterns as $possible_locale => $pattern )
 		{
-			if ( preg_match( '/^' . str_replace( '/', '\\/', $pattern ) . '$/', $subject ) )
+			// We add possible subdomains, and put slashes in points
+			if ( preg_match( '/^' . '(?:.+\.)' .str_replace( '.', '\\.', $pattern ) . '$/', $subject ) )
 			{
 				$language = $possible_locale;
 				break;
