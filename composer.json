@@ -22,7 +22,7 @@
 		"php": ">=5.3"
 	},
 	"autoload": {
-		"psr-0": { "natxet\\OperaCore": "." }
+		"psr-0": { "OperaCore": "." }
 	}
 }
 
