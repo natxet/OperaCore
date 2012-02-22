@@ -3,7 +3,8 @@
 namespace OperaCore;
 
 define( 'OPERACORE_PATH', realpath( __DIR__ ) );
-define( 'VENDOR_PATH', realpath( dirname( dirname( __DIR__ ) ) ) );
+define( 'VENDOR_PATH', realpath(  __DIR__ .'/../../../../' ) );
+define( 'APPS_PATH', realpath(  __DIR__ . '/../../../../../app/' ) );
 
 require( 'autoload.php' );
 
