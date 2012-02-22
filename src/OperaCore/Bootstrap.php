@@ -81,11 +81,7 @@ class Bootstrap
 	{
 		$app = $this->getApp( $c );
 		define( 'APP', $app );
-<<<<<<< HEAD
 		define( 'APP_PATH', APPS_PATH . "/$app" );
-=======
-		define( 'APP_PATH', realpath( APPS_PATH . "/$app" ) );
->>>>>>> paths and minifiers
 	}
 
 	/**
