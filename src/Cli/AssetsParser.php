@@ -1,10 +1,10 @@
 <?php
-namespace natxet\OperaCore\Cli;
+namespace OperaCore\Cli;
 /**
  * User: nacho
  * Date: 07/02/12
  */
-class AssetsParser extends \natxet\OperaCore\CliScript
+class AssetsParser extends \OperaCore\CliScript
 {
 	/**
 	 * @var array with key => value

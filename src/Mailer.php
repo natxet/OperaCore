@@ -1,5 +1,5 @@
 <?php
-namespace natxet\OperaCore;
+namespace OperaCore;
 /**
  * User: nacho
  * Date: 09/02/12

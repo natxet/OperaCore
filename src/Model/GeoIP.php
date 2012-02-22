@@ -1,11 +1,11 @@
 <?php
 
-namespace natxet\OperaCore\Model;
+namespace OperaCore\Model;
 /**
  * User: nacho
  * Date: 01/02/12
  */
-class GeoIP extends \natxet\OperaCore\Model
+class GeoIP extends \OperaCore\Model
 {
 	const TEST_IP       = '81.36.161.13';
 	const LOCALHOST_IP  = '127.0.0.1';

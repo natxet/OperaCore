@@ -1,6 +1,6 @@
 <?php
 
-namespace natxet\OperaCore;
+namespace OperaCore;
 
 /**
  * The Model (MVC)
