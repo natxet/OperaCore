@@ -40,7 +40,7 @@ class AssetsParser extends \OperaCore\CliScript
 	{
 		echo "== Procesando App $app\n";
 
-		$this->app_path = realpath( __DIR__ . "/../../../app/$app/" ) . '/';
+		$this->app_path = APPS_PATH . "/$app/";
 		$config_path    = "{$this->app_path}config/";
 
 		$config      = $this->container['Config'];
@@ -177,9 +177,15 @@ class AssetsParser extends \OperaCore\CliScript
 		switch ( $type )
 		{
 			case 'js':
+<<<<<<< HEAD
 				return \JShrink::minify( $string );
 			case 'css':
 				return \CssMinifier::minify( $string );
+=======
+				return \OperaCore\JSMinifier::minify( $string );
+			case 'css':
+				return \OperaCore\CssMinifier::minify( $string );
+>>>>>>> paths and minifiers
 			default:
 				return '';
 		}

@@ -2,9 +2,9 @@
 
 namespace OperaCore;
 
-define( 'OPERACORE_PATH', realpath( __DIR__ ) );
-define( 'VENDOR_PATH', realpath(  __DIR__ .'/../../../../' ) );
-define( 'APPS_PATH', realpath(  __DIR__ . '/../../../../../app/' ) );
+define( 'OPERACORE_PATH', realpath( __DIR__  ) );
+define( 'VENDOR_PATH', realpath(  __DIR__ .'/../../../..' ) );
+define( 'APPS_PATH', realpath( __DIR__ . '/../../../../../app' ) );
 
 require( 'autoload.php' );
 
@@ -81,7 +81,11 @@ class Bootstrap
 	{
 		$app = $this->getApp( $c );
 		define( 'APP', $app );
+<<<<<<< HEAD
 		define( 'APP_PATH', APPS_PATH . "/$app" );
+=======
+		define( 'APP_PATH', realpath( APPS_PATH . "/$app" ) );
+>>>>>>> paths and minifiers
 	}
 
 	/**

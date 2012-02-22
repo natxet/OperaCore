@@ -1,14 +1,8 @@
 <?php
 namespace OperaCore;
-/**
- * User: nacho
- * Date: 19/02/12
- */
-abstract class Minifier
+
+interface Minifier
 {
 
-	static public function minify( $string, array $params = null)
-	{
-		return $string;
-	}
+	static public function minify( $string, array $params = null);
 }
