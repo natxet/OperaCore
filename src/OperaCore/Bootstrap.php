@@ -13,7 +13,6 @@ Profile::Checkpoint( 'Begin of OperaCore' );
 class Bootstrap
 {
 	// Paths
-	const APP_REL_PATH_FROM_FW = '/../../../app/';
 	const LOCALE_REL_PATH      = '/Locale';
 	const CONFIG_REL_PATH      = '/Config';
 	const VIEW_REL_PATH        = '/View';
@@ -82,7 +81,7 @@ class Bootstrap
 	{
 		$app = $this->getApp( $c );
 		define( 'APP', $app );
-		define( 'APP_PATH', realpath( __DIR__ . self::APP_REL_PATH_FROM_FW . $app ) );
+		define( 'APP_PATH', APPS_PATH . "/$app" );
 	}
 
 	/**
