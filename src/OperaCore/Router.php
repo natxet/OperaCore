@@ -201,12 +201,9 @@ class Router
 				Profile::collect( 'Route', $profile );
 				break;
 			}
-<<<<<<< HEAD
-			Profile::collect( 'Route', " - $this->uri does not match " . $v['pattern_regex'] );
-=======
+			
 			$profile['uri'] = "Not found: $this->uri uri does not match " . $v['pattern_regex'];
 			Profile::collect( 'Route', $profile );
->>>>>>> Non ported changes
 		}
 
 		if ( !isset( $route_key ) )
