@@ -1,6 +1,6 @@
 {
 	"name": "natxet/OperaCore",
-	"version": "0.0.5",
+	"version": "0.1.6",
 	"type": "library",
 	"description": "The core of the Opera PHP Framework, based on Symfony components. MVC + i18n everywhere",
 	"keywords": ["symfony","php","frameworks"],
