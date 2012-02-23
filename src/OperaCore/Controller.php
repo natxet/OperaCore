@@ -4,6 +4,8 @@ namespace OperaCore;
 
 abstract class Controller
 {
+	const TEMPLATE_RENDER_RETURN = 0;
+	const TEMPLATE_RENDER_PRINT  = 1;
 	/**
 	 * @var Container Container
 	 */
@@ -16,8 +18,9 @@ abstract class Controller
 
 	public function __construct( $container )
 	{
-		$this->container = $container;
-		$this->template  = $container['Template'];
+		$this->container   = $container;
+		$this->template    = $container['Template'];
+		$this->request_uri = $container['Request']->getRequestUri();
 	}
 
 	protected function getModel( $model )
@@ -26,7 +29,7 @@ abstract class Controller
 		return new $class_name( $this->container );
 	}
 
-	protected function render( $template, $context )
+	protected function render( $template, $context, $print = true )
 	{
 		if ( PROFILE ) Profile::Checkpoint( 'Controller - Action executed: starting render' );
 
@@ -37,14 +40,24 @@ abstract class Controller
 			             )
 		);
 
-		echo $this->template->render( $template, $context );
+		$output = $this->template->render( $template, $context );
 
 		if ( PROFILE ) Profile::Checkpoint( 'Controller - Template Rendered' );
+
+		if ( $print )
+		{
+			echo $output;
+			if ( PROFILE ) Profile::Checkpoint( 'Controller - Template Printed' );
+		}
+		else return $output;
+
+		return true;
 	}
 
 	protected function renderJson( $var, $js_var = false )
 	{
 		header( 'Content-Type: application/json; charset=utf-8', true, 200 );
+
 		if ( $js_var ) echo "var $js_var = ";
 		echo json_encode( $var );
 
@@ -80,17 +93,12 @@ abstract class Controller
 
 		if ( DEBUG )
 		{
-			print( '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-					<html xmlns="http://www.w3.org/1999/xhtml">
-					<head>
-						<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-					</head>
-					<body>
-					<H1>DEBUG: this is not for production</H1>' );
-			print( "HTTP/1.0 $status" );
-			print( "<br/>" );
-			print( "Location: <a href=\"$destination\">$destination</a>" );
-			print( '</body></html>' );
+			$context = array(
+				'seconds'     => 10,
+				'status'      => $status,
+				'destination' => $destination
+			);
+			$this->render( 'redirectionDebug.html.twig', $context );
 		}
 		else
 		{
@@ -99,5 +107,12 @@ abstract class Controller
 		}
 
 		die();
+	}
+
+	protected function paginator( $base_url, $total_rows, $current_page, $results_per_page )
+	{
+		$paginator = new \OperaCore\Module\Paginator( $this->container );
+
+		return $paginator->getHtml( $base_url, $total_rows, $current_page, $results_per_page );
 	}
 }

@@ -1,0 +1,14 @@
+<ol class="pagination">
+
+{% if pagination.previous_page %}
+	<li><a href="{{base_url}}{{pagination.previous_page}}" class="previous">{% trans %}Previous{% endtrans %}</a></li>
+{% endif %}
+
+{% for page in pagination.pages %}
+	<li><a href="{{base_url}}{{page}}" class="{% if page == pagination.current_page %}current{% endif %}">{{page}}</a></li>
+{% endfor %}
+
+{% if pagination.next_page %}
+	<li><a href="{{base_url}}{{next_page}}" class="next">{% trans %}Next{% endtrans %}</a></li>
+{% endif %}
+</ol>

@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+	<meta HTTP-EQUIV="REFRESH" content="{{seconds}}; url={{destination}}">
+	<style>
+		body { margin: 20px; }
+		h1, p {
+
+			font-family: 'Helvetica Neue', Arial, sans-serif;
+		}
+
+		h1 {
+			display: block;
+			font-size: 1.6em;
+			background-color: #C1141D;
+			color: #fff;
+			padding: 4px;
+			margin: 20px 0 0 0;
+			cursor: pointer;
+		}
+
+		pre {
+			margin: 20px 0;
+			padding: 20px;
+			border: 1px dashed LightSteelBlue;
+			background-color: #F8FCFF;
+		}
+	</style>
+</head>
+<body>
+<h1>DEBUG: this is not for production</h1>
+<pre>
+HTTP/1.0 {{status}}
+Location: <a href="{{destination}}">{{destination}}</a>
+</pre>
+<p>Click on the destination or wait {{seconds}} seconds for being redirected if you're a lazy dog :-)</p>
+</body>
+</html>

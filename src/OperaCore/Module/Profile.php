@@ -7,12 +7,14 @@ namespace OperaCore\Module;
 class Profile extends \OperaCore\Controller
 {
 
-	protected function actionShow()
+	public function actionShow()
 	{
+		$models = isset(\OperaCore\Profile::$collections['Models']) ? \OperaCore\Profile::$collections['Models'] : array();
 		$context = array(
 			'checkpoints' => \OperaCore\Profile::$checkpoints,
-			'models_profile' => \OperaCore\Profile::$collections['Models'],
+			'models_profile' => $models,
 			'templates_profile' => \OperaCore\Profile::$collections['Templates'],
+			'routes_profile' => \OperaCore\Profile::$collections['Route'],
 			'slow_query_miliseconds' => 300
 		);
 		$this->render( 'profile.html.twig', $context );

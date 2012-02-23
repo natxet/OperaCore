@@ -23,7 +23,11 @@ class Config
 	protected function parse_ini( $domain, $env, $path )
 	{
 		$ext                    = self::FILE_EXTENSION;
-		if( !file_exists( "$path/$domain.$ext" ) ) return false;
+		if( !file_exists( "$path/$domain.$ext" ) )
+		{
+			if( DEBUG ) echo "file does not exists $path/$domain.$ext";
+			return false;
+		}
 		$this->domains[$domain] = parse_ini_file( "$path/$domain.$ext", 1 );
 
 		// in environments different than pro, you can extend config file

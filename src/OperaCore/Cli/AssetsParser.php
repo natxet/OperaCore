@@ -41,7 +41,8 @@ class AssetsParser extends \OperaCore\CliScript
 		echo "== Procesando App $app\n";
 
 		$this->app_path = APPS_PATH . "/$app/";
-		$config_path    = "{$this->app_path}config/";
+		$config_path    = "{$this->app_path}Config/";
+		$gen_config_path = $config_path . "gen/";
 
 		$config      = $this->container['Config'];
 		self::$paths = $config->get( 'main', 'paths' );
@@ -69,11 +70,11 @@ class AssetsParser extends \OperaCore\CliScript
 		}
 
 		$config_filename = ( $env == 'dev' ) ? 'assets.gen.dev.ini' : 'assets.gen.ini';
-		echo "\nWriting config file $config_path$config_filename\n";
-		$config->write_ini(
-			$assets_config, $config_path . $config_filename,
+		echo "\nWriting config file $gen_config_path$config_filename\n";
+		echo $config->write_ini(
+			$assets_config, $gen_config_path . $config_filename,
 			'; This is a generated file, please manage your assets in main.ini'
-		);
+		)."\n";
 	}
 
 	/**

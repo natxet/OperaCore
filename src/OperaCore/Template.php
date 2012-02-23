@@ -17,6 +17,7 @@ class Template extends \Twig_Environment
 		$this->addGlobal( 'route', $c['Router'] );
 		$this->addGlobal( 'path', $c['template_params']['public_paths'] );
 		$this->addGlobal( 'asset', $c['template_params']['assets'] );
+		$this->addGlobal( 'request_uri', $c['template_params']['request_uri'] );
 		$this->addGlobal( 'helper', new Helper() );
 		$this->addExtension( new \Twig_Extensions_Extension_I18n() );
 		if ( DEBUG ) $this->addExtension( new \Twig_Extensions_Extension_Debug() );

@@ -60,7 +60,7 @@ abstract class Model
 		return $res;
 	}
 
-	public function fetchColumn( $statement, $params )
+	public function fetchOneColumn( $statement, $params )
 	{
 		$res = $this->fetchOne( $statement, $params );
 		foreach( $res as $k => $v ) return $v;

@@ -23,7 +23,7 @@ class Container extends \Pimple
 		$this['Config']      = $this->share(
 			function ( $this )
 			{
-				return new Config( array( 'main', 'routes', 'assets.gen' ), $this['config_env'], $this['config_path'] );
+				return new Config( array( 'main', 'routes', 'gen/assets.gen' ), $this['config_env'], $this['config_path'] );
 			}
 		);
 
@@ -35,7 +35,7 @@ class Container extends \Pimple
 		);
 
 		$assets = array();
-		foreach ( $this['Config']->get( 'assets.gen' ) as $k => $v )
+		foreach ( $this['Config']->get( 'gen/assets.gen' ) as $k => $v )
 		{
 			$assets[$k] = $v['url'];
 		}
@@ -45,7 +45,8 @@ class Container extends \Pimple
 			'debug'       => DEBUG,
 			'auto_reload' => true,
 			'public_paths'=> $this['Config']->get( 'main', 'paths' ),
-			'assets'      => $assets
+			'assets'      => $assets,
+			'request_uri' => $this['Request']->getRequestUri()
 		);
 		$this['Template']        = $this->share(
 			function ( $this )

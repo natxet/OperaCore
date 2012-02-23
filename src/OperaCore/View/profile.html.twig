@@ -166,6 +166,38 @@
 			{% endfor %}
 			</tbody>
 		</table>
+
+
+		<table id="routes_profile">
+			<caption>
+				Routes profile
+			</caption>
+			<thead>
+			<tr>
+				<th>Route</th>
+				<th>Subdomain</th>
+				<th>uri</th>
+			</tr>
+			</thead>
+			<tbody>
+			{% for log in routes_profile %}
+			<tr>
+				<td>
+					{{log.route}}
+				</td>
+
+				<td>
+					{{log.subdomain}}
+				</td>
+
+				<td>
+					{{log.uri}}
+				</td>
+			</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+
 	</div>
 </div>
 

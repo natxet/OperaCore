@@ -161,38 +161,57 @@ class Router
 
 	public function getRoute()
 	{
+		define( 'PROFILE', preg_match( '/.*' . self::PROFILE_SUFFIX . '$/', $this->uri ) );
+
 		foreach ( $this->routes as $k => $v )
 		{
-			Profile::collect( 'Route', "trying route $k" );
+			$profile = array( 'route' => $k );
 			// so this is a specific route for a subdomain
 			if ( isset( $v['subdomain'] ) )
 			{
-				if ( !preg_match_all( $v['subdomain_regex'], $this->subdomain, $matches_subdomain ) )
+				// if the subdomain matches the config
+				if ( preg_match_all( $v['subdomain_regex'], $this->subdomain, $matches_subdomain ) )
 				{
-					Profile::collect(
-						'Route', " - $this->subdomain subdomain does not match " . $v['subdomain_regex']
-					);
+					array_shift( $matches_subdomain );
+					$profile['subdomain'] = "FOUND! $this->subdomain subdomain DOES match " . $v['subdomain_regex'];
+				}
+				else
+				{
+					// if not, we profile and go for next route_key (continue foreach)
+					$profile['subdomain'] = "Not found: $this->subdomain subdomain does not match " . $v['subdomain_regex'];
+					Profile::collect( 'Route', $profile );
 					continue;
 				}
-				Profile::collect( 'Route', " - $this->subdomain subdomain DOES match " . $v['subdomain_regex'] );
 			}
 			else
 			{
+				// if subdomain was not configured
 				$matches_subdomain = array();
 			}
+			// if the uri matches the config
 			if ( preg_match_all( $v['pattern_regex'], $this->uri, $matches ) )
 			{
-				$matches   = array_merge( $matches, $matches_subdomain );
+
+				$profile['uri'] = "FOUND! $this->uri uri DOES match " . $v['pattern_regex'];
+
+				array_shift( $matches );
+				$matches   = array_merge( $matches_subdomain, $matches );
 				$route_key = $k;
+
+				Profile::collect( 'Route', $profile );
 				break;
 			}
+<<<<<<< HEAD
 			Profile::collect( 'Route', " - $this->uri does not match " . $v['pattern_regex'] );
+=======
+			$profile['uri'] = "Not found: $this->uri uri does not match " . $v['pattern_regex'];
+			Profile::collect( 'Route', $profile );
+>>>>>>> Non ported changes
 		}
 
 		if ( !isset( $route_key ) )
 		{
-			$route_key = '404';
-			$matches   = array();
+			throw new \OperaCore\Exception\PageNotFound( $this->uri );
 		}
 
 		$route  = $this->routes[$route_key];
@@ -200,8 +219,6 @@ class Router
 
 		if ( isset( $route['params'] ) && $route['params'] && is_array( $route['params'] ) )
 		{
-			array_shift( $matches );
-
 			for ( $i = 0; $i < count( $route['params'] ); $i++ )
 			{
 				if ( isset( $matches[$i] ) )
@@ -210,8 +227,6 @@ class Router
 				}
 			}
 		}
-
-		define( 'PROFILE', preg_match( '/.*' . self::PROFILE_SUFFIX . '$/', $this->uri ) );
 
 		return array( $route['controller'], $route['action'], $params );
 	}
