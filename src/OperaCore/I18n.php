@@ -36,7 +36,7 @@ class I18n
 	protected function guessLanguage( $c )
 	{
 
-		$url_part = $c['Config']->get( 'main', 'locale', 'url_part' );
+		$url_part         = $c['Config']->get( 'main', 'locale', 'url_part' );
 		$locales_patterns = $c['Config']->get( 'main', 'locales_patterns' );
 
 		switch ( $url_part )
@@ -75,9 +75,9 @@ class I18n
 		define( 'LOCALE', $this->_language );
 		define( 'LANG', substr( $this->_language, 0, 2 ) );
 
-		putenv( 'LANGUAGE = ' . LOCALE );
-		putenv( 'LANG = ' . LOCALE );
-		putenv( 'LC_ALL = ' . LOCALE );
+		putenv( 'LANGUAGE=' . LOCALE );
+		putenv( 'LANG=' . LOCALE );
+		putenv( 'LC_ALL=' . LOCALE );
 
 		if ( !defined( 'LC_MESSAGES' ) ) define( 'LC_MESSAGES', 6 );
 
@@ -114,10 +114,6 @@ class I18n
 
 	public function parseTranlations( $string )
 	{
-		return preg_replace(
-			' /{
-			{(.+?)}
-		}/e', "dgettext( self::ROUTES_DOMAIN, '\\1')", $string
-		);
+		return preg_replace( '/{{(.+?)}}/e', "dgettext( self::ROUTES_DOMAIN, '\\1')", $string );
 	}
 }
