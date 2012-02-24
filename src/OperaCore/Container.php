@@ -14,6 +14,16 @@ class Container extends \Pimple
 				return \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 			}
 		);
+
+		$this['Response'] =
+			function ()
+			{
+				$response = new \Symfony\Component\HttpFoundation\Response();
+				$response->setCharset('UTF-8');
+				$response->setPublic();
+				return $response;
+			}
+		;
 	}
 
 	public function init()

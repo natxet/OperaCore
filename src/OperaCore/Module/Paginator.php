@@ -20,10 +20,10 @@ class Paginator extends \OperaCore\Controller
 	public function getHtml( $base_url, $total_rows, $current_page, $results_per_page )
 	{
 		$pagination_params     = $this->paginate_get_array( $total_rows, $current_page, $results_per_page );
-		$context['pagination'] = $pagination_params;
-		$context['base_url']   = $base_url;
+		$this->context['pagination'] = $pagination_params;
+		$this->context['base_url']   = $base_url;
 
-		return $this->render( 'pagination.html.twig', $context, parent::TEMPLATE_RENDER_RETURN );
+		return $this->render( 'pagination.html.twig', parent::TEMPLATE_RENDER_RETURN );
 	}
 
 	/**
@@ -36,7 +36,7 @@ class Paginator extends \OperaCore\Controller
 	 */
 	protected function paginate_get_array( $total_rows, $current_page, $results_per_page )
 	{
-		$total_pages = floor( $total_rows / $results_per_page );
+		$total_pages = ceil( $total_rows / $results_per_page );
 
 		$min_page = ( $current_page < 5 ) ? 1 : $current_page - 5;
 		$max_page = ( $min_page + 9 < $total_pages ) ? $min_page + 9 : $total_pages;

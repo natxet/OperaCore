@@ -16,11 +16,22 @@ abstract class Controller
 	 */
 	protected $template;
 
+	/**
+	 * @var array context for the template
+	 */
+	protected $context = array();
+
+	/**
+	 * @var \Symfony\Component\HttpFoundation\Response Response object
+	 */
+	protected $response;
+
 	public function __construct( $container )
 	{
 		$this->container   = $container;
 		$this->template    = $container['Template'];
 		$this->request_uri = $container['Request']->getRequestUri();
+		$this->response    = $container['Response'];
 	}
 
 	protected function getModel( $model )
@@ -29,24 +40,27 @@ abstract class Controller
 		return new $class_name( $this->container );
 	}
 
-	protected function render( $template, $context, $print = true )
+	protected function render( $template, $print = true )
 	{
 		if ( PROFILE ) Profile::Checkpoint( 'Controller - Action executed: starting render' );
 
 		if ( PROFILE ) Profile::Collect(
 			'Templates', array(
 			                  "template"   => $template,
-			                  'context'    => $context
+			                  'context'    => $this->context
 			             )
 		);
 
-		$output = $this->template->render( $template, $context );
+		$output = $this->template->render( $template, $this->context );
 
 		if ( PROFILE ) Profile::Checkpoint( 'Controller - Template Rendered' );
 
 		if ( $print )
 		{
-			echo $output;
+			$this->response->setContent( $output );
+			// TODO: $response->prepare($request); ?
+			// die( $this->response->__toString());
+			$this->response->send();
 			if ( PROFILE ) Profile::Checkpoint( 'Controller - Template Printed' );
 		}
 		else return $output;
@@ -54,12 +68,18 @@ abstract class Controller
 		return true;
 	}
 
-	protected function renderJson( $var, $js_var = false )
+	protected function response()
+	{
+		//('Not Found', 404, array('Content-Type' => 'text/plain'));
+		$this->response->send();
+	}
+
+	protected function renderJson( $js_var = false )
 	{
 		header( 'Content-Type: application/json; charset=utf-8', true, 200 );
 
 		if ( $js_var ) echo "var $js_var = ";
-		echo json_encode( $var );
+		echo json_encode( $this->context );
 
 		switch ( json_last_error() )
 		{
@@ -89,21 +109,21 @@ abstract class Controller
 
 	protected function redirect( $destination, $permanent = true )
 	{
-		$status = $permanent ? "301 Moved Permanently" : "307 Moved Temporarely";
+		$status = $permanent ? 301 : 307;
 
 		if ( DEBUG )
 		{
-			$context = array(
+			$this->context = array(
 				'seconds'     => 10,
 				'status'      => $status,
 				'destination' => $destination
 			);
-			$this->render( 'redirectionDebug.html.twig', $context );
+			$this->render( 'redirectionDebug.html.twig' );
 		}
 		else
 		{
-			header( "HTTP/1.0 $status" );
-			header( "Location: $destination" );
+			$this->response = new \Symfony\Component\HttpFoundation\RedirectResponse( $destination, $status );
+			$this->response->send();
 		}
 
 		die();

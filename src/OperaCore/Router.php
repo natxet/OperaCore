@@ -123,8 +123,7 @@ class Router
 	{
 		$r        = $this->routes[$route_key];
 		$uri      = $r['pattern_i18n'];
-		$hostname = isset( $r['subdomain_i18n'] ) ? $r['subdomain_i18n'] . '.' . $this->domain : $this->domain;
-
+		$hostname = !empty( $r['subdomain_i18n'] ) ? $r['subdomain_i18n'] . '.' . $this->domain : $this->domain;
 		$path = $this->composeAbsoluteURL( $hostname, $uri );
 
 		foreach ( $r['params'] as $param )
@@ -201,7 +200,7 @@ class Router
 				Profile::collect( 'Route', $profile );
 				break;
 			}
-			
+
 			$profile['uri'] = "Not found: $this->uri uri does not match " . $v['pattern_regex'];
 			Profile::collect( 'Route', $profile );
 		}
