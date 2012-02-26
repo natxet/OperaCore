@@ -42,7 +42,7 @@ class Bootstrap
 	 */
 	protected function getEnv( $c )
 	{
-		if( isCli() )
+		if( $this->isCli() )
 		{
 			global $argv;
 			return $argv[2];
@@ -60,7 +60,7 @@ class Bootstrap
 	 */
 	protected function getApp( $c )
 	{
-		if( isCli() )
+		if( $this->isCli() )
 		{
 			global $argv;
 			return $argv[3];
