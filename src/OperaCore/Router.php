@@ -114,10 +114,10 @@ class Router
 	}
 
 	/**
-	 * @param       $route_key string the route key
+	 * @param string $route_key the route key
 	 * @param array $params
-	 *
-	 * @return string
+	 * @param bool $absolute if the url must be absolute (protocol://domain/uri) or just the uri with /x relative
+	 * @return mixed|string
 	 */
 	public function getPath( $route_key, $params = array(), $absolute = true )
 	{
@@ -125,7 +125,8 @@ class Router
 
 		$r        = $this->routes[$route_key];
 		$uri      = $r['pattern_i18n'];
-		$hostname = !empty( $r['subdomain_i18n'] ) ? $r['subdomain_i18n'] . '.' . $this->domain : $this->domain;
+		$subdomain = empty( $r['subdomain_i18n'] ) ? '' : "{$r['subdomain_i18n']}.";
+		$hostname = isset( $r['subdomain'] ) ? $subdomain . $this->domain : $this->domain;
 		if( $absolute )
 		{
 			$path = $this->composeAbsoluteURL( $hostname, $uri );
