@@ -12,10 +12,15 @@ class Template extends \Twig_Environment
 	 */
 	public function __construct( $c )
 	{
+		$public_paths = $c['template_params']['public_paths'];
+		if( isset( $public_paths['img_locale'] ) )
+		{
+			$public_paths['img_locale'] = str_replace( '%LANG%', LANG, $public_paths['img_locale'] );
+		}
 		$twig_loader = new \Twig_Loader_Filesystem( $c['template_params']['paths'] );
 		parent::__construct( $twig_loader, $c['template_params'] );
 		$this->addGlobal( 'route', $c['Router'] );
-		$this->addGlobal( 'path', $c['template_params']['public_paths'] );
+		$this->addGlobal( 'path', $public_paths );
 		$this->addGlobal( 'asset', $c['template_params']['assets'] );
 		$this->addGlobal( 'request_uri', $c['template_params']['request_uri'] );
 		$this->addGlobal( 'helper', new Helper() );
