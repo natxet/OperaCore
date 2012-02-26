@@ -42,7 +42,15 @@ class Bootstrap
 	 */
 	protected function getEnv( $c )
 	{
-		return $c['Request']->server->get( 'APP_ENV' );
+		if( isCli() )
+		{
+			global $argv;
+			return $argv[2];
+		}
+		else
+		{
+			return $c['Request']->server->get( 'APP_ENV' );
+		}
 	}
 
 	/**
@@ -52,7 +60,15 @@ class Bootstrap
 	 */
 	protected function getApp( $c )
 	{
-		return $c['Request']->server->get( 'APP_APP' );
+		if( isCli() )
+		{
+			global $argv;
+			return $argv[3];
+		}
+		else
+		{
+			return $c['Request']->server->get( 'APP_APP' );
+		}
 	}
 
 	/**
@@ -87,4 +103,13 @@ class Bootstrap
 	{
 		return $this->container;
 	}
+
+	/**
+	 * @return bool returns true if PHP is executed from command line
+	 */
+	public function isCli()
+	{
+		return php_sapi_name() === "cli";
+	}
+
 }
