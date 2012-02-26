@@ -4,7 +4,7 @@ namespace OperaCore;
  * User: nacho
  * Date: 19/02/12
  */
-class CSSMinifier implements Minifier
+class CssMinifier implements Minifier
 {
 	static public function minify( $string, array $params = null)
 	{

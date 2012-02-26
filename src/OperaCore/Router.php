@@ -119,12 +119,21 @@ class Router
 	 *
 	 * @return string
 	 */
-	public function getPath( $route_key, $params = array() )
+	public function getPath( $route_key, $params = array(), $absolute = true )
 	{
+		if( !array_key_exists( $route_key, $this->routes ) ) return '';
+
 		$r        = $this->routes[$route_key];
 		$uri      = $r['pattern_i18n'];
 		$hostname = !empty( $r['subdomain_i18n'] ) ? $r['subdomain_i18n'] . '.' . $this->domain : $this->domain;
-		$path = $this->composeAbsoluteURL( $hostname, $uri );
+		if( $absolute )
+		{
+			$path = $this->composeAbsoluteURL( $hostname, $uri );
+		}
+		else
+		{
+			$path = $uri;
+		}
 
 		foreach ( $r['params'] as $param )
 		{
@@ -133,6 +142,7 @@ class Router
 		}
 		// TODO: chapuza
 		$path = str_replace( array( '(?:/p)?', '(?::)?', '(?:', ')?' ), '', $path );
+		$path = stripslashes( $path );
 		return $path;
 	}
 

@@ -38,7 +38,7 @@ class Paginator extends \OperaCore\Controller
 	{
 		$total_pages = ceil( $total_rows / $results_per_page );
 
-		$min_page = ( $current_page < 5 ) ? 1 : $current_page - 5;
+		$min_page = ( $current_page <= 5 ) ? 1 : $current_page - 5;
 		$max_page = ( $min_page + 9 < $total_pages ) ? $min_page + 9 : $total_pages;
 		while ( ( $min_page > 1 ) && ( $max_page - $min_page + 1 < 9 ) )
 		{

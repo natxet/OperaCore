@@ -44,6 +44,8 @@ class AssetsParser extends \OperaCore\CliScript
 		$config_path    = "{$this->app_path}Config/";
 		$gen_config_path = $config_path . "gen/";
 
+		if( !is_dir( $gen_config_path ) ) mkdir( $gen_config_path, 0777 );
+
 		$config      = $this->container['Config'];
 		self::$paths = $config->get( 'main', 'paths' );
 

@@ -6,6 +6,11 @@ abstract class Controller
 {
 	const TEMPLATE_RENDER_RETURN = 0;
 	const TEMPLATE_RENDER_PRINT  = 1;
+
+	const TEMPLATE_MESSAGE_INFO  = 'info';
+	const TEMPLATE_MESSAGE_ALERT = 'alert';
+	const TEMPLATE_MESSAGE_ERROR = 'error';
+
 	/**
 	 * @var Container Container
 	 */
@@ -25,6 +30,11 @@ abstract class Controller
 	 * @var \Symfony\Component\HttpFoundation\Response Response object
 	 */
 	protected $response;
+
+	/**
+	 * @var array messages to be sent to the user in the template
+	 */
+	protected $messages = array();
 
 	public function __construct( $container )
 	{
@@ -50,6 +60,9 @@ abstract class Controller
 			                  'context'    => $this->context
 			             )
 		);
+
+
+		$this->template->addGlobal( 'messages', $this->messages );
 
 		$output = $this->template->render( $template, $this->context );
 
@@ -134,5 +147,10 @@ abstract class Controller
 		$paginator = new \OperaCore\Module\Paginator( $this->container );
 
 		return $paginator->getHtml( $base_url, $total_rows, $current_page, $results_per_page );
+	}
+
+	public function addMessage( $message, $type = self::TEMPLATE_MESSAGE_INFO )
+	{
+		$this->messages[$type][] = $message;
 	}
 }

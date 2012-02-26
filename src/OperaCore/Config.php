@@ -25,7 +25,7 @@ class Config
 		$ext                    = self::FILE_EXTENSION;
 		if( !file_exists( "$path/$domain.$ext" ) )
 		{
-			if( DEBUG ) echo "file does not exists $path/$domain.$ext";
+			if( DEBUG ) echo "Config error: file does not exists $path/$domain.$ext";
 			return false;
 		}
 		$this->domains[$domain] = parse_ini_file( "$path/$domain.$ext", 1 );
