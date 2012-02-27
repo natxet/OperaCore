@@ -198,7 +198,7 @@ class Router
 				// if subdomain was not configured
 				$matches_subdomain = array();
 			}
-echo "\n",$v['pattern_regex'];
+
 			// if the uri matches the config
 			if ( preg_match_all( $v['pattern_regex'], $this->uri, $matches ) )
 			{
