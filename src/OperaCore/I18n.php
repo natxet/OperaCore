@@ -82,8 +82,8 @@ class I18n
 		if ( !defined( 'LC_MESSAGES' ) ) define( 'LC_MESSAGES', 6 );
 
 		$setlocale_res = setlocale(
-			LC_ALL, $this->_language . ".utf8", $this->_language . ".UTF8", $this->_language . ".utf-8",
-			$this->_language . ".UTF-8", $this->_language, LANG
+			LC_ALL, $this->_language . ".".strtolower( str_replace( '-', '', $this->_encoding ) ), $this->_language . ".".strtoupper( str_replace( '-', '', $this->_encoding ) ), $this->_language . ".".strtolower( $this->_encoding ),
+			$this->_language . ".".strtoupper($this->_encoding), $this->_language, LANG
 		);
 		if ( ( $setlocale_res != $this->_language && LANG == $setlocale_res ) || empty( $setlocale_res ) )
 		{
