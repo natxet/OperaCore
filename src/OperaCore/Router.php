@@ -94,8 +94,8 @@ class Router
 		}
 
 		// It prepares the whole regex with limiters and adds profile suffix
-		$regex   = '/^' . str_replace( '/', '\\/', $regex ) . '(?:' . self::PROFILE_SUFFIX . ')?$/';
-		$s_regex = '/^' . str_replace( '/', '\\/', $s_regex ) . '$/';
+		$regex   = '/(*UTF8)^' . str_replace( '/', '\\/', $regex ) . '(?:' . self::PROFILE_SUFFIX . ')?$/';
+		$s_regex = '/(*UTF8)^' . str_replace( '/', '\\/', $s_regex ) . '$/';
 
 		// Saves the regex for later access
 		$r['pattern_regex'] = $regex;
@@ -157,8 +157,8 @@ class Router
 	 */
 	protected function processRequest( $request )
 	{
-		$this->uri      = $request->getRequestUri();
-		$this->hostname = $request->getHttpHost();
+		$this->uri      = urldecode( $request->getRequestUri() );
+		$this->hostname = urldecode( $request->getHttpHost() );
 		$this->scheme   = $request->getScheme();
 
 		// detect subdomain (does not suport more than 3 level domains!)
@@ -198,6 +198,7 @@ class Router
 				// if subdomain was not configured
 				$matches_subdomain = array();
 			}
+echo "\n",$v['pattern_regex'];
 			// if the uri matches the config
 			if ( preg_match_all( $v['pattern_regex'], $this->uri, $matches ) )
 			{
