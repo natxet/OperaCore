@@ -8,6 +8,9 @@ namespace OperaCore\Module;
  */
 class Paginator extends \OperaCore\Controller
 {
+	const DEFAULT_NUM_PAGES = 10;
+
+	protected $num_pages;
 	/**
 	 * Returns the HTML of a paginator
 	 *
@@ -17,12 +20,12 @@ class Paginator extends \OperaCore\Controller
 	 * @param $results_per_page int
 	 * @return bool|string A string if the Template is correctly rendered
 	 */
-	public function getHtml( $base_url, $total_rows, $current_page, $results_per_page )
+	public function getHtml( $base_url, $total_rows, $current_page, $results_per_page, $num_pages = NULL )
 	{
+		$this->num_pages = $num_pages ? (int) $num_pages : self::DEFAULT_NUM_PAGES;
 		$pagination_params     = $this->paginate_get_array( $total_rows, $current_page, $results_per_page );
 		$this->context['pagination'] = $pagination_params;
 		$this->context['base_url']   = $base_url;
-
 		return $this->render( 'pagination.html.twig', parent::TEMPLATE_RENDER_RETURN );
 	}
 
@@ -36,11 +39,14 @@ class Paginator extends \OperaCore\Controller
 	 */
 	protected function paginate_get_array( $total_rows, $current_page, $results_per_page )
 	{
+		$num_pages = $this->num_pages - 1;
+		$mid_page = round( $num_pages / 2 );
+
 		$total_pages = ceil( $total_rows / $results_per_page );
 
-		$min_page = ( $current_page <= 5 ) ? 1 : $current_page - 5;
-		$max_page = ( $min_page + 9 < $total_pages ) ? $min_page + 9 : $total_pages;
-		while ( ( $min_page > 1 ) && ( $max_page - $min_page + 1 < 9 ) )
+		$min_page = ( $current_page <= $mid_page ) ? 1 : $current_page - $mid_page;
+		$max_page = ( $min_page + $num_pages < $total_pages ) ? $min_page + $num_pages : $total_pages;
+		while ( ( $min_page > 1 ) && ( $max_page - $min_page + 1 < $num_pages ) )
 		{
 			$min_page--;
 		}

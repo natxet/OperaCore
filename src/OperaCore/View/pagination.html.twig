@@ -9,6 +9,6 @@
 {% endfor %}
 
 {% if pagination.next_page %}
-	<li><a href="{{base_url}}{{next_page}}" class="next">{% trans %}Next{% endtrans %}</a></li>
+	<li><a href="{{base_url}}{{pagination.next_page}}" class="next">{% trans %}Next{% endtrans %}</a></li>
 {% endif %}
 </ol>
