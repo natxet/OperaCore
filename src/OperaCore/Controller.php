@@ -50,6 +50,11 @@ abstract class Controller
 		return new $class_name( $this->container );
 	}
 
+	protected function getPath( $route_key, $params = array(), $absolute = true )
+	{
+		return $this->container['Router']->getPath( $route_key, $params, $absolute );
+	}
+
 	protected function render( $template, $print = true )
 	{
 		if ( PROFILE ) Profile::Checkpoint( 'Controller - Action executed: starting render' );
