@@ -24,6 +24,8 @@ class Paginator extends \OperaCore\Controller
 	{
 		$this->num_pages = $num_pages ? (int) $num_pages : self::DEFAULT_NUM_PAGES;
 		$pagination_params     = $this->paginate_get_array( $total_rows, $current_page, $results_per_page );
+		if( count( $pagination_params['pages'] ) < 2 ) return '';
+
 		$this->context['pagination'] = $pagination_params;
 		$this->context['base_url']   = $base_url;
 		return $this->render( 'pagination.html.twig', parent::TEMPLATE_RENDER_RETURN );
