@@ -77,6 +77,33 @@
 <div id="profile">
 	<h2>Profile</h2>
 	<div id="profile_contents">
+
+		<table id="exception_profile">
+			<caption>
+				Exception profile
+			</caption>
+			<thead>
+			<tr>
+				<th>Message<br/>Backtrace</th>
+			</tr>
+			</thead>
+			<tbody>
+			{% for e in exception_profile %}
+			<tr>
+				<td>
+					<pre>
+{{e.message}}
+
+================================================================================
+
+{{e.trace}}
+					</pre>
+				</td>
+			</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+
 		<table id="checkpoints">
 			<caption>
 				Checkpoints profile

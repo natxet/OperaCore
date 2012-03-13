@@ -88,7 +88,6 @@ abstract class Controller
 
 	protected function response()
 	{
-		//('Not Found', 404, array('Content-Type' => 'text/plain'));
 		$this->response->send();
 	}
 

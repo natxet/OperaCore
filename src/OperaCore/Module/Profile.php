@@ -13,6 +13,7 @@ class Profile extends \OperaCore\Controller
 		$this->context = array(
 			'checkpoints' => \OperaCore\Profile::$checkpoints,
 			'models_profile' => $models,
+			'exception_profile' => \OperaCore\Profile::$collections['Exception'],
 			'templates_profile' => \OperaCore\Profile::$collections['Templates'],
 			'routes_profile' => \OperaCore\Profile::$collections['Route'],
 			'slow_query_miliseconds' => 300

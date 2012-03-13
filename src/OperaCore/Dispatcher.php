@@ -29,6 +29,13 @@ class Dispatcher
 		}
 		catch( \Exception $e )
 		{
+			if ( PROFILE ) Profile::Collect(
+				'Exception', array(
+				                  "message"   => $e->getMessage(),
+				                  'trace'    => $e->getTraceAsString()
+				             )
+			);
+
 			$class_name = '\\' . APP . '\\Controller\\' . 'Error';
 			$controller = new $class_name( $c );
 			$controller->action500( array() );
