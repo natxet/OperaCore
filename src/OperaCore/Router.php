@@ -142,7 +142,7 @@ class Router
 			$path        = str_replace( "%$param%", $param_value, $path );
 		}
 		// TODO: chapuza
-		$path = str_replace( array( '(?:/p)?', '(?::)?', '(?:', ')?' ), '', $path );
+		$path = str_replace( array( '(?:&p=)?', '(?::)?', '(?:', ')?' ), '', $path );
 		$path = stripslashes( $path );
 		return $path;
 	}
