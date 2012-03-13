@@ -26,13 +26,13 @@ class Dispatcher
 			$class_name = '\\' . APP . '\\Controller\\' . 'Error';
 			$controller = new $class_name( $c );
 			$controller->action404( array() );
-		}/*
+		}
 		catch( \Exception $e )
 		{
 			$class_name = '\\' . APP . '\\Controller\\' . 'Error';
 			$controller = new $class_name( $c );
 			$controller->action500( array() );
-		}*/
+		}
 
 		Profile::Checkpoint( 'Controller action executed. End of OperaCore' );
 
