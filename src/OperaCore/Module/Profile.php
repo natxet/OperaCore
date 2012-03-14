@@ -14,12 +14,21 @@ class Profile extends \OperaCore\Controller
 		$exception_profile = isset(\OperaCore\Profile::$collections['Exception'])
 			? \OperaCore\Profile::$collections['Exception'] : array();
 
+		$globals = array(
+			'server' => $_SERVER,
+			'session' => isset($_SESSION) ? $_SESSION : NULL,
+			'get' => $_GET,
+			'post' => $_POST,
+			'cookie' => $_COOKIE
+		);
+
 		$this->context = array(
 			'checkpoints' => \OperaCore\Profile::$checkpoints,
 			'models_profile' => $models,
 			'exception_profile' => $exception_profile,
 			'templates_profile' => \OperaCore\Profile::$collections['Templates'],
 			'routes_profile' => \OperaCore\Profile::$collections['Route'],
+			'globals' => $globals,
 			'slow_query_miliseconds' => 300
 		);
 		$this->render( 'profile.html.twig' );

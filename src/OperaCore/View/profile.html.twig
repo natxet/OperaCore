@@ -104,6 +104,46 @@
 			</tbody>
 		</table>
 
+		<table id="globals">
+			<caption>
+				Globals
+			</caption>
+			<thead>
+			<tr>
+				<th>Session</th>
+				<th>Get</th>
+				<th>Post</th>
+				<th>Cookie</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td>
+					{% debug globals.session %}
+				</td>
+				<td>
+					{% debug globals.get %}
+				</td>
+				<td>
+					{% debug globals.post %}
+				</td>
+				<td>
+					{% debug globals.cookie %}
+				</td>
+			</tr>
+			<tr>
+				<th colspan=4>
+					Server
+				</th>
+			</tr>
+			<tr>
+				<td colspan=4>
+					{% debug globals.server %}
+				</td>
+			</tr>
+			</tbody>
+		</table>
+
 		<table id="checkpoints">
 			<caption>
 				Checkpoints profile
