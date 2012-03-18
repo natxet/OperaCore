@@ -36,9 +36,12 @@ class Dispatcher
 				             )
 			);
 
+			error_log( $e->getMessage() );
+
 			$class_name = '\\' . APP . '\\Controller\\' . 'Error';
 			$controller = new $class_name( $c );
-			$controller->action500( array() );
+			$controller->action500( array('message' => $e->getMessage() ) );
+
 		}
 
 		Profile::Checkpoint( 'Controller action executed. End of OperaCore' );

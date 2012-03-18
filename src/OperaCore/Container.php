@@ -33,7 +33,7 @@ class Container extends \Pimple
 		$this['Config']      = $this->share(
 			function ( $this )
 			{
-				return new Config( array( 'main', 'routes', 'gen/assets.gen' ), $this['config_env'], $this['config_path'] );
+				return new Config( array( 'main', 'database', 'routes', 'gen/assets.gen' ), $this['config_env'], $this['config_path'] );
 			}
 		);
 
