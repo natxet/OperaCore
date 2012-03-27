@@ -18,8 +18,7 @@ class Dispatcher
 
 			Profile::Checkpoint( 'Routing and Controller Construction' );
 
-			$method = "action$action";
-			$controller->$method( $params );
+			$controller->action( $action, $params );
 		}
 		catch( \OperaCore\Exception\PageNotFound $e )
 		{

@@ -1,14 +1,18 @@
-<ol class="pagination">
+<div class="pagination pagination-centered">
+	<ol>
+		<li class="{% if not pagination.previous_page %}disabled{% endif %}">
+			<a href="{{base_url}}{{pagination.previous_page}}" class="previous">&larr;</a>
+		</li>
 
-{% if pagination.previous_page %}
-	<li><a href="{{base_url}}{{pagination.previous_page}}" class="previous">{% trans %}Previous{% endtrans %}</a></li>
-{% endif %}
 
-{% for page in pagination.pages %}
-	<li><a href="{{base_url}}{{page}}" class="{% if page == pagination.current_page %}current{% endif %}">{{page}}</a></li>
-{% endfor %}
+	{% for page in pagination.pages %}
+		<li class="{% if page == pagination.current_page %}active{% endif %}">
+			<a href="{{base_url}}{{page}}">{{page}}</a>
+		</li>
+	{% endfor %}
 
-{% if pagination.next_page %}
-	<li><a href="{{base_url}}{{pagination.next_page}}" class="next">{% trans %}Next{% endtrans %}</a></li>
-{% endif %}
-</ol>
+		<li class="{% if not pagination.next_page %}disabled{% endif %}">
+			<a href="{{base_url}}{{pagination.next_page}}" class="next">&rarr;</a>
+		</li>
+	</ol>
+</div>

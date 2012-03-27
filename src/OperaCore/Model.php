@@ -29,7 +29,7 @@ abstract class Model
 	 *
 	 * @return bool the result
 	 */
-	public function write( $statement, $params, $profile = 'write' )
+	public function write( $statement, $params = array(), $profile = 'write' )
 	{
 		$offset = microtime( true );
 
@@ -51,7 +51,7 @@ abstract class Model
 	 *
 	 * @return array Associative array with all the results
 	 */
-	public function fetchAll( $statement, $params, $profile = 'read' )
+	public function fetchAll( $statement, $params = array(), $profile = 'read' )
 	{
 		$offset = microtime( true );
 
@@ -73,7 +73,7 @@ abstract class Model
 	 *
 	 * @return array Associative array with the first result
 	 */
-	public function fetchOne( $statement, $params, $profile = 'read' )
+	public function fetchOne( $statement, $params = array(), $profile = 'read' )
 	{
 		$offset = microtime( true );
 
@@ -115,4 +115,34 @@ abstract class Model
 			) );
 		}
 	}
+
+	protected function prepare_params( $params, $mandatory, $optional )
+	{
+		$final_params = array();
+
+		foreach( $mandatory as $field => $type )
+		{
+			if( !isset( $params[$field] ) ) throw new \InvalidArgumentException();
+			$final_params[$field] = $this->prepare_param_type( $params[$field], $type );
+		}
+
+		foreach( $optional as $field => $type )
+		{
+			$final_params[$field] = isset( $params[$field] ) ?
+				$this->prepare_param_type( $params[$field], $type ) : NULL;
+
+		}
+
+		return $final_params;
+	}
+
+	protected function prepare_param_type( $param, $type )
+	{
+		switch( $type )
+		{
+			case 'int': return (int) $param;
+			default: return $param;
+		}
+	}
 }
+

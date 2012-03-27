@@ -19,8 +19,6 @@ class Container extends \Pimple
 			function ()
 			{
 				$response = new \Symfony\Component\HttpFoundation\Response();
-				$response->setCharset('UTF-8');
-				$response->setPublic();
 				return $response;
 			}
 		;
@@ -98,5 +96,14 @@ class Container extends \Pimple
 				return new Mailer( $this );
 			}
 		);
+
+		$this['cookies_lifetime'] = $this['Config']->get( 'main', 'app', 'cookies_lifetime' );
+		$this['cookies_domain'] = $this['Config']->get( 'main', 'paths', 'cookies_domain' );
+		$this['Session'] =
+			function( $this )
+			{
+				return new Session( $this['cookies_lifetime'], $this['cookies_domain'] );
+			}
+		;
 	}
 }

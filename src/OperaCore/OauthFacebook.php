@@ -24,11 +24,10 @@ class OauthFacebook implements Oauth
 	 */
 	public function load( Container $c )
 	{
-		$this->config =  $c['Config']->get( 'main', 'facebook' );
-		$this->request = $c['Request'];
-
-		require_once VENDOR_PATH . 'facebook/src/facebook.php';
-		$this->provider = new \Facebook( $this->config );
+		$this->config                      = $c['Config']->get( 'main', 'facebook' );
+		$this->config['session_container'] = $c['Session'];
+		$this->request                     = $c['Request'];
+		$this->provider                    = new Facebook( $this->config );
 	}
 
 	/**
@@ -44,15 +43,15 @@ class OauthFacebook implements Oauth
 	 */
 	public function getUserData()
 	{
-		$user_data = $this->provider->api('/me');
+		$user_data = $this->provider->api( '/me' );
 
 		return array(
-			'id' => $user_data['id'],
-			'username' => $user_data['username'],
-			'email' => $user_data['email'],
-			'name' => $user_data['name'],
+			'id'         => $user_data['id'],
+			'username'   => $user_data['username'],
+			'email'      => $user_data['email'],
+			'name'       => $user_data['name'],
 			'first_name' => $user_data['first_name'],
-			'last_name' => $user_data['last_name']
+			'last_name'  => $user_data['last_name']
 		);
 	}
 
@@ -69,7 +68,7 @@ class OauthFacebook implements Oauth
 	 */
 	public function isError()
 	{
-		$error = $this->request->query->get('error');
+		$error = $this->request->query->get( 'error' );
 
 		return $error ? $error : NULL;
 	}
