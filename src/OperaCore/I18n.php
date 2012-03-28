@@ -26,7 +26,7 @@ class I18n
 		$this->_locale_path = $c['i18n_path'];
 		$this->_encoding    = $c['Config']->get( 'main', 'app', 'encoding' );
 
-		$this->init();
+		$this->init( $c );
 	}
 
 	/**
@@ -48,9 +48,9 @@ class I18n
 			default:
 				$subject = '';
 		}
-
 		foreach ( $locales_patterns as $possible_locale => $pattern )
 		{
+
 			// We add possible subdomains, and put slashes in points
 			if ( preg_match( '/^' . '(?:.+\.)?' . str_replace( '.', '\\.', $pattern ) . '$/', $subject ) )
 			{
@@ -58,13 +58,12 @@ class I18n
 				break;
 			}
 		}
-
 		if ( !isset( $language ) ) $language = $c['Config']->get( 'main', 'locale', 'default' );
 
 		$this->_language = $language;
 	}
 
-	protected function init()
+	protected function init( $c )
 	{
 		if ( !is_scalar( $this->_language ) )
 		{
@@ -74,6 +73,7 @@ class I18n
 
 		define( 'LOCALE', $this->_language );
 		define( 'LANG', substr( $this->_language, 0, 2 ) );
+		define( 'BASE_HOSTNAME', $c['Config']->get( 'main', 'locales_patterns', LOCALE ) );
 
 		putenv( 'LANGUAGE=' . LOCALE );
 		putenv( 'LANG=' . LOCALE );

@@ -157,16 +157,11 @@ class Router
 	 */
 	protected function processRequest( $request )
 	{
-		$this->uri      = urldecode( $request->getRequestUri() );
-		$this->hostname = urldecode( $request->getHttpHost() );
-		$this->scheme   = $request->getScheme();
-
-		// detect subdomain (does not suport more than 3 level domains!)
-		preg_match( '/^([^\.]+)\.[^\.]+\.[^\.]+$/', $this->hostname, $matches );
-		if ( isset( $matches[1] ) ) $this->subdomain = $matches[1];
-		else $this->subdomain = NULL;
-
-		$this->domain = $this->subdomain ? str_replace( $this->subdomain . '.', '', $this->hostname ) : $this->hostname;
+		$this->uri       = urldecode( $request->getRequestUri() );
+		$this->hostname  = urldecode( $request->getHttpHost() );
+		$this->scheme    = $request->getScheme();
+		$this->subdomain = preg_replace( '/\.?' . str_replace('.', '\\.', BASE_HOSTNAME) . '/' , '', $this->hostname );
+		$this->domain    = BASE_HOSTNAME;
 	}
 
 	public function getRoute()
