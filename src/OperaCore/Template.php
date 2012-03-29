@@ -25,6 +25,7 @@ class Template extends \Twig_Environment
 		$this->addGlobal( 'request_uri', $c['template_params']['request_uri'] );
 		$this->addGlobal( 'helper', new Helper() );
 		$this->addExtension( new \Twig_Extensions_Extension_I18n() );
+		$this->addExtension( new \Twig_Extensions_Extension_Markdown() );
 		if ( DEBUG ) $this->addExtension( new \Twig_Extensions_Extension_Debug() );
 	}
 }
