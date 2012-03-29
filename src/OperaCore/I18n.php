@@ -29,6 +29,29 @@ class I18n
 		$this->init( $c );
 	}
 
+
+	/**
+	 * @param $request \Symfony\Component\HttpFoundation\Request
+	 * @param $config Config
+	 * @return null|string
+	 */
+	public function getBrowserLanguage( $request, $config )
+	{
+		$accepted_languages = $request->getLanguages();
+
+		$langs = array();
+		foreach( array_keys( $config->get( 'main', 'locales_names' ) ) as $l) {
+			$langs[$l] = $l;
+			$langs[substr( $l, 0, 2 )] = $l;
+		}
+
+		foreach( $accepted_languages as $possible_language )
+		{
+			if( array_key_exists($possible_language, $langs)) return $langs[$possible_language];
+		}
+		return NULL;
+	}
+
 	/**
 	 *
 	 * @param $c Container
@@ -50,7 +73,6 @@ class I18n
 		}
 		foreach ( $locales_patterns as $possible_locale => $pattern )
 		{
-
 			// We add possible subdomains, and put slashes in points
 			if ( preg_match( '/^' . '(?:.+\.)?' . str_replace( '.', '\\.', $pattern ) . '$/', $subject ) )
 			{
