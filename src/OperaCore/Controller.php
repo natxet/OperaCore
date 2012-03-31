@@ -246,4 +246,9 @@ abstract class Controller
 		if( !isset( $this->session ) ) $this->session = $this->container['Session'];
 		if( isset( $this->session[$key] ) ) unset( $this->session[$key] );
 	}
+
+	protected function getTransVar( $trans, $vars )
+	{
+		return str_replace( array_keys($vars), array_values($vars), $trans );
+	}
 }
