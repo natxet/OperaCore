@@ -69,4 +69,11 @@ class Helper
 		$string = preg_replace("/[$separator]+/u", "$separator", $string);
 		return $string;
 	}
+
+	static function markdown( $string )
+	{
+		include_once( VENDOR_PATH . 'twig/extensions/lib/Twig/Extensions/Markdown/markdown.php');
+		if( function_exists( 'Markdown' ) ) return \Markdown( $string );
+		else return $string;
+	}
 }
