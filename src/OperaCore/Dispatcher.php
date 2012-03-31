@@ -28,14 +28,20 @@ class Dispatcher
 		}
 		catch( \Exception $e )
 		{
-			if ( PROFILE ) Profile::Collect(
+			error_log( $e->getMessage() );
+
+			if ( defined( 'PROFILE' ) && PROFILE ) Profile::Collect(
 				'Exception', array(
 				                  "message"   => $e->getMessage(),
 				                  'trace'    => $e->getTraceAsString()
 				             )
 			);
 
-			error_log( $e->getMessage() );
+			/*
+			 * this means something really wrong happened
+			 * because getRoute failed
+			 */
+			if( !defined( 'PROFILE' ) ) die( $e->getMessage() );
 
 			$class_name = '\\' . APP . '\\Controller\\' . 'Error';
 			$controller = new $class_name( $c );
