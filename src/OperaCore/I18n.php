@@ -26,7 +26,8 @@ class I18n
 		$this->_locale_path = $c['i18n_path'];
 		$this->_encoding    = $c['Config']->get( 'main', 'app', 'encoding' );
 
-		$this->init( $c );
+		$this->set_locale( $this->_language );
+		$this->definitions( $c );
 	}
 
 
@@ -85,13 +86,7 @@ class I18n
 		$this->_language = $language;
 	}
 
-	protected function init( $c )
-	{
-		if ( !is_scalar( $this->_language ) )
-		{
-			$type = gettype( $this->_language );
-			throw new \InvalidArgumentException( "Language should be a scalar variable and is a $type" );
-		}
+	protected function definitions( $c ) {
 
 		define( 'LOCALE', $this->_language );
 		define( 'LANG', substr( $this->_language, 0, 2 ) );
@@ -100,17 +95,28 @@ class I18n
 		putenv( 'LANGUAGE=' . LOCALE );
 		putenv( 'LANG=' . LOCALE );
 		putenv( 'LC_ALL=' . LOCALE );
+	}
+
+	protected function set_locale( $language)
+	{
+		if ( !is_scalar( $language ) )
+		{
+			$type = gettype( $language );
+			throw new \InvalidArgumentException( "Language should be a scalar variable and is a $type" );
+		}
+
+		$lang = substr( $language, 0, 2 );
 
 		if ( !defined( 'LC_MESSAGES' ) ) define( 'LC_MESSAGES', 6 );
 
 		$setlocale_res = setlocale(
-			LC_ALL, $this->_language . ".".strtolower( str_replace( '-', '', $this->_encoding ) ), $this->_language . ".".strtoupper( str_replace( '-', '', $this->_encoding ) ), $this->_language . ".".strtolower( $this->_encoding ),
-			$this->_language . ".".strtoupper($this->_encoding), $this->_language, LANG
+			LC_ALL, $language . ".".strtolower( str_replace( '-', '', $this->_encoding ) ), $language . ".".strtoupper( str_replace( '-', '', $this->_encoding ) ), $language . ".".strtolower( $this->_encoding ),
+			$language . ".".strtoupper($this->_encoding), $language, $lang
 		);
-		if ( ( $setlocale_res != $this->_language && LANG == $setlocale_res ) || empty( $setlocale_res ) )
+		if ( ( $setlocale_res != $language && $lang == $setlocale_res ) || empty( $setlocale_res ) )
 		{
 			throw new \Exception( sprintf(
-				"Tried: setlocale to ' % s', but could only set to ' % s'.", $this->_language, $setlocale_res
+				"Tried: setlocale to ' % s', but could only set to ' % s'.", $language, $setlocale_res
 			) );
 		}
 
