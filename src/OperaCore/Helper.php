@@ -72,7 +72,7 @@ class Helper
 
 	static function markdown( $string )
 	{
-		include_once( VENDOR_PATH . 'twig/extensions/lib/Twig/Extensions/Markdown/markdown.php');
+		include_once( VENDOR_PATH . 'natxet/twig-extensions/lib/Twig/Extensions/Markdown/markdown.php');
 		if( function_exists( 'Markdown' ) ) return \Markdown( $string );
 		else return $string;
 	}
