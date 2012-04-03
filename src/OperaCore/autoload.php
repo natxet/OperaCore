@@ -1,6 +1,6 @@
 <?php
 
-require_once( VENDOR_PATH . 'symfony/classloader/UniversalClassLoader.php' );
+require_once( VENDOR_PATH . 'symfony/component/Symfony/Component/classloader/UniversalClassLoader.php' );
 
 use Symfony\Component\ClassLoader\UniversalClassLoader;
 
