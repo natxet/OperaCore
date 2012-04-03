@@ -2,7 +2,7 @@
 
 namespace OperaCore;
 
-require_once VENDOR_PATH . 'facebook/src/base_facebook.php';
+require_once VENDOR_PATH . 'facebook/php-sdk/src/base_facebook.php';
 
 /**
  * Extends the BaseFacebook class with the intent of using
