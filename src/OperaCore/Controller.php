@@ -251,4 +251,14 @@ abstract class Controller
 	{
 		return str_replace( array_keys($vars), array_values($vars), $trans );
 	}
+
+	protected function getParam( $key, $type = NULL )
+	{
+		$param = isset($this->params[$key]) ? $this->params[$key] : NULL;
+		switch( $type )
+		{
+			case 'int': $param = (int) $param;
+		}
+		return $param;
+	}
 }
