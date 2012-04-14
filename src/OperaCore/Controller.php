@@ -249,7 +249,7 @@ abstract class Controller
 
 	protected function getTransVar( $trans, $vars )
 	{
-		return str_replace( array_keys($vars), array_values($vars), $trans );
+		return str_replace( array_keys( $vars ), array_values( $vars ), gettext( $trans ) );
 	}
 
 	protected function getParam( $key, $type = NULL )
