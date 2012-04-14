@@ -8,7 +8,7 @@ class CssMinifier implements Minifier
 {
 	static public function minify( $string, array $params = null)
 	{
-		//require_once( __DIR__ . '/../natxet/CssMin/CssMin.php' );
+		require_once( VENDOR_PATH . 'natxet/CssMin/src/CssMin.php' );
 		return \CssMin::minify( $string );
 	}
 }

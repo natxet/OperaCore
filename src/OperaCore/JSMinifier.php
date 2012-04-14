@@ -8,8 +8,7 @@ class JSMinifier implements Minifier
 {
 	static public function minify( $string, array $params = null)
 	{
-	// TODO: Solve this
-		//return \JShrink::minify( $string );
-		return $string;
+		require_once( VENDOR_PATH . 'natxet/JShrink/src/JShrink.php' );
+		return \JShrink::minify( $string );
 	}
 }
