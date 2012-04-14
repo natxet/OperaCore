@@ -40,7 +40,7 @@ class AssetsParser extends \OperaCore\CliScript
 	{
 		echo "== Procesando App $app\n";
 
-		$this->app_path = APPS_PATH . "/$app/";
+		$this->app_path = APPS_PATH . "$app/";
 		$config_path    = "{$this->app_path}Config/";
 		$gen_config_path = $config_path . "gen/";
 
@@ -63,11 +63,15 @@ class AssetsParser extends \OperaCore\CliScript
 			list( $basename, $extension ) = explode( '.', $asset );
 			$checksum = $this->parseAndMinify( $basename, $extension, $env );
 
+			$url = ( 'dev' == $env ) ?
+				self::$paths[$extension] . "$basename.$extension" :
+				self::$paths[$extension] . $checksum . ".$env.gen.$extension";
+
 			$assets_config[$asset] = array(
 				'basename'  => $basename,
 				'extension' => $extension,
 				'checksum'  => $checksum,
-				'url'       => self::$paths[$extension] . $checksum . ".$env.gen.$extension"
+				'url'       => $url
 			);
 		}
 
@@ -96,7 +100,7 @@ class AssetsParser extends \OperaCore\CliScript
 
 			$app_asset_name = preg_replace( '/(.*)(\.[a-z]+)/', '\1.fw\2', $asset );
 			$app_asset      = "$app_public_path$extension/$app_asset_name";
-			$fw_asset       = OPERACORE_PATH . "/public/$extension/$asset";
+			$fw_asset       = OPERACORE_PATH . "public/$extension/$asset";
 
 			if ( !file_exists( $app_asset ) )
 			{
