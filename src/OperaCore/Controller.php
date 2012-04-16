@@ -104,11 +104,12 @@ abstract class Controller
 
 	protected function renderTemplate( $template )
 	{
-		$session_message = $this->getSessionMessage();
+		// TODO: mal implementado, esto hará que se use siempre session y no poder varnizar
+		/*$session_message = $this->getSessionMessage();
 		if( $session_message)
 		{
 			$this->addMessage( $session_message['message'], $session_message['type'] );
-		}
+		}*/
 
 		$this->template->addGlobal( 'messages', $this->messages );
 		$content = $this->template->render( $template, $this->context );
