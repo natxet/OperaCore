@@ -34,6 +34,11 @@ class Router
 	/**
 	 * @var string
 	 */
+	protected $port;
+
+	/**
+	 * @var string
+	 */
 	protected $domain;
 
 	/**
@@ -149,7 +154,8 @@ class Router
 
 	protected function composeAbsoluteURL( $hostname, $uri )
 	{
-		return $this->scheme . '://' . $hostname . $uri;
+		$port = ( '80' == $this->port ) ? '' : ":{$this->port}";
+		return $this->scheme . '://' . $hostname . $port . $uri;
 	}
 
 	/**
@@ -158,7 +164,8 @@ class Router
 	protected function processRequest( $request )
 	{
 		$this->uri       = urldecode( $request->getRequestUri() );
-		$this->hostname  = urldecode( $request->getHttpHost() );
+		$this->hostname  = urldecode( $request->getHost() );
+		$this->port      = $request->getPort();
 		$this->scheme    = $request->getScheme();
 		$this->subdomain = preg_replace( '/\.?' . str_replace('.', '\\.', BASE_HOSTNAME) . '/' , '', $this->hostname );
 		$this->domain    = BASE_HOSTNAME;
