@@ -60,6 +60,10 @@ class AssetsParser extends \OperaCore\CliScript
 		$assets = $config->get( 'main', 'assets', 'assets' );
 		foreach ( $assets as $asset )
 		{
+			if( strpos( $asset, ',' ) )
+			{
+				$asset = $this->mergeFiles( $asset );
+			}
 			list( $basename, $extension ) = explode( '.', $asset );
 			$checksum = $this->parseAndMinify( $basename, $extension, $env );
 
@@ -133,6 +137,27 @@ class AssetsParser extends \OperaCore\CliScript
 				echo unlink( "$path$filename" ) . "\n";
 			}
 		}
+	}
+
+	function mergeFiles( $basenames, $env = 'dev' )
+	{
+		$files    = explode( ',', $basenames );
+		list( , $extension ) = explode( '.', $files[0] );
+		$path     = "{$this->app_path}public/$extension/";
+
+		$filename = str_replace( ',', '_', $basenames );
+		$filename = str_replace( ".$extension", '', $filename );
+		$filename = $filename . ".$extension";
+
+		$contents = '';
+		foreach( $files as $file )
+		{
+			$contents .= file_get_contents( $path . $file );
+		}
+
+		file_put_contents( $path . $filename , $contents );
+
+		return $filename;
 	}
 
 	function parseAndMinify( $basename, $extension, $env = 'dev' )
