@@ -88,7 +88,7 @@ abstract class Model
 		return $res;
 	}
 
-	public function fetchOneColumn( $statement, $params, $profile = 'read' )
+	public function fetchOneColumn( $statement, $params = array(), $profile = 'read' )
 	{
 		$res = $this->fetchOne( $statement, $params, $profile );
 		foreach( $res as $k => $v ) return $v;
