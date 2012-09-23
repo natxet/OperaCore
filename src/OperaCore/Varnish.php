@@ -5,8 +5,13 @@ namespace OperaCore;
 class Varnish
 {
 
-	public function flushRegex( $regex )
+	public function banUrl( $regex )
 	{
-		exec('varnishadm ban.url "' . $regex . '"');
+		exec('varnishadm ban.url ~ "' . $regex . '"');
+	}
+
+	public function banHost( $regex )
+	{
+		exec('varnishadm req.http.host ~ "' . $regex . '"');
 	}
 }
