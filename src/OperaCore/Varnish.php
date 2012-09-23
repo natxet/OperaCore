@@ -12,6 +12,6 @@ class Varnish
 
 	public function banHost( $regex )
 	{
-		exec('varnishadm req.http.host ~ "' . $regex . '"');
+		exec('varnishadm ban req.http.host ~ "' . $regex . '"');
 	}
 }
