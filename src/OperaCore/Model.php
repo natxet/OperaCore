@@ -44,6 +44,11 @@ abstract class Model
 		return $affected_rows;
 	}
 
+	public function last_insert_id( $profile = 'write' )
+	{
+		return $this->db->$profile->lastInsertId();
+	}
+
 	/**
 	 * @param $statement    string The SQL statement to execute
 	 * @param $params array The associative array for binding params
