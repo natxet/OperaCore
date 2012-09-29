@@ -93,7 +93,7 @@ class Bootstrap
 	{
 		$app = $this->getApp( $c );
 		define( 'APP', $app );
-		define( 'APP_PATH', APPS_PATH . "/$app" );
+		define( 'APP_PATH', APPS_PATH . "$app" );
 	}
 
 	/**
