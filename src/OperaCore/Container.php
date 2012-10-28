@@ -47,9 +47,10 @@ class Container extends \Pimple
 		{
 			$assets[$k] = $v['url'];
 		}
+		$twig_cache =  $this['Config']->get( 'main', 'cache', 'twig' );
 		$this['template_params'] = array(
 			'paths'       => array( APP_PATH . Bootstrap::VIEW_REL_PATH, OPERACORE_PATH . Bootstrap::VIEW_REL_PATH ),
-			'cache'       => DEBUG ? false : APP_PATH . Bootstrap::CACHE_REL_PATH,
+			'cache'       => $twig_cache ? APP_PATH . Bootstrap::CACHE_REL_PATH : false,
 			'debug'       => DEBUG,
 			'auto_reload' => true,
 			'public_paths'=> $this['Config']->get( 'main', 'paths' ),

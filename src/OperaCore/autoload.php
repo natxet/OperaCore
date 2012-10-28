@@ -1,32 +1,29 @@
 <?php
 
-if ( !class_exists( 'Composer\\Autoload\\ClassLoader', false ) )
+require_once( VENDOR_PATH . 'symfony/component/Symfony/Component/ClassLoader/UniversalClassLoader.php' );
+
+use Symfony\Component\ClassLoader\UniversalClassLoader;
+
+$loader = new UniversalClassLoader();
+
+$namespaces = array(
+	'Symfony\Component' => VENDOR_PATH . 'symfony/component',
+	'OperaCore'         => VENDOR_PATH . 'natxet/OperaCore/src',
+);
+
+// this is for loading the namespace of every app we have in the apps directory
+foreach ( glob( APPS_PATH . '*', GLOB_ONLYDIR ) as $namespace )
 {
-	require( VENDOR_PATH . '/.composer/ClassLoader.php' );
+	$namespaces[basename( $namespace )] = APPS_PATH;
 }
 
-$__composer_autoload_init = function()
-{
-	$loader = new \Composer\Autoload\ClassLoader();
+$loader->registerNamespaces( $namespaces );
 
-	$map = require ( VENDOR_PATH . '/.composer/autoload_namespaces.php' );
+$prefixes = array(
+	'Pimple'            => VENDOR_PATH . 'fabpot/pimple/lib',
+	'Twig'              => VENDOR_PATH . 'fabpot/twig/lib',
+	'Twig_Extensions'   => VENDOR_PATH . 'natxet/twig-extensions/lib',
+);
+$loader->registerPrefixes( $prefixes );
 
-	foreach ( $map as $namespace => $path )
-	{
-		$loader->add( $namespace, $path );
-	}
-
-	foreach ( new \DirectoryIterator( APPS_PATH ) as $file )
-	{
-		if ( $file->isDir() )
-		{
-			$loader->add( $file->getFilename(), APPS_PATH );
-		}
-	}
-
-	$loader->register();
-
-	return $loader;
-};
-
-return $__composer_autoload_init();
+$loader->register();

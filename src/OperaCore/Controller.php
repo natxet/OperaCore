@@ -104,11 +104,12 @@ abstract class Controller
 
 	protected function renderTemplate( $template )
 	{
-		$session_message = $this->getSessionMessage();
+		// TODO: mal implementado, esto hará que se use siempre session y no poder varnizar
+		/*$session_message = $this->getSessionMessage();
 		if( $session_message)
 		{
 			$this->addMessage( $session_message['message'], $session_message['type'] );
-		}
+		}*/
 
 		$this->template->addGlobal( 'messages', $this->messages );
 		$content = $this->template->render( $template, $this->context );
@@ -249,6 +250,16 @@ abstract class Controller
 
 	protected function getTransVar( $trans, $vars )
 	{
-		return str_replace( array_keys($vars), array_values($vars), $trans );
+		return str_replace( array_keys( $vars ), array_values( $vars ), gettext( $trans ) );
+	}
+
+	protected function getParam( $key, $type = NULL )
+	{
+		$param = isset($this->params[$key]) ? $this->params[$key] : NULL;
+		switch( $type )
+		{
+			case 'int': $param = (int) $param;
+		}
+		return $param;
 	}
 }

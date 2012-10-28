@@ -44,6 +44,11 @@ abstract class Model
 		return $affected_rows;
 	}
 
+	public function last_insert_id( $profile = 'write' )
+	{
+		return $this->db->$profile->lastInsertId();
+	}
+
 	/**
 	 * @param $statement    string The SQL statement to execute
 	 * @param $params array The associative array for binding params
@@ -88,7 +93,7 @@ abstract class Model
 		return $res;
 	}
 
-	public function fetchOneColumn( $statement, $params, $profile = 'read' )
+	public function fetchOneColumn( $statement, $params = array(), $profile = 'read' )
 	{
 		$res = $this->fetchOne( $statement, $params, $profile );
 		foreach( $res as $k => $v ) return $v;
