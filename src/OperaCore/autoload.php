@@ -1,13 +1,12 @@
 <?php
-
-require_once( VENDOR_PATH . 'symfony/component/Symfony/Component/ClassLoader/UniversalClassLoader.php' );
+require_once( VENDOR_PATH . 'autoload.php' );
 
 use Symfony\Component\ClassLoader\UniversalClassLoader;
 
 $loader = new UniversalClassLoader();
 
 $namespaces = array(
-	'Symfony\Component' => VENDOR_PATH . 'symfony/component',
+	'Symfony\Component' => VENDOR_PATH . 'symfony/class-loader',
 	'OperaCore'         => VENDOR_PATH . 'natxet/OperaCore/src',
 );
 
