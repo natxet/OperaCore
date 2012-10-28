@@ -94,6 +94,9 @@ class Bootstrap
 		$app = $this->getApp( $c );
 		define( 'APP', $app );
 		define( 'APP_PATH', APPS_PATH . "$app" );
+		if( !is_dir( APP_PATH ) ) {
+			throw new \UnexpectedValueException( "Could not find the app $app at " . APP_PATH );
+		}
 	}
 
 	/**
