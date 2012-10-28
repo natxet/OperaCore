@@ -94,8 +94,8 @@ class Router
 		}
 
 		// It prepares the whole regex with limiters and adds profile suffix
-		$regex   = '/(*UTF8)^' . str_replace( '/', '\\/', $regex ) . '(?:' . self::PROFILE_SUFFIX . ')?$/';
-		$s_regex = '/(*UTF8)^' . str_replace( '/', '\\/', $s_regex ) . '$/';
+		$regex   = '/^' . str_replace( '/', '\\/u', $regex ) . '(?:' . self::PROFILE_SUFFIX . ')?$/';
+		$s_regex = '/^' . str_replace( '/', '\\/u', $s_regex ) . '$/';
 
 		// Saves the regex for later access
 		$r['pattern_regex'] = $regex;
