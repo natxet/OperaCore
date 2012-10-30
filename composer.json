@@ -19,7 +19,17 @@
 		}
 	},
 	"require": {
-		"php": ">=5.3"
+		"php": ">=5.3",
+		"symfony/http-foundation": "*",
+		"symfony/class-loader": "*",
+		"natxet/CssMin": "*",
+		"tedivm/jshrink": "*",
+		"pimple/pimple": "*",
+		"twig/twig": "*",
+		"twig/extensions": "*",
+		"swiftmailer/swiftmailer": "4.1.*",
+		"natxet/natxet-twig-extensions": "*",
+		"misd/twig-markdowner": "1.0.*"
 	},
 	"autoload": {
 		"psr-0": { "OperaCore": "src" }

@@ -26,6 +26,7 @@ class Template extends \Twig_Environment
 		$this->addGlobal( 'helper', new Helper() );
 		$this->addExtension( new \Twig_Extensions_Extension_I18n() );
 
+		$this->addExtension(new \natxet\NatxetTwigExtensions\Twig\Extension\PHPFunctionsExtension());
 		$parser = new \dflydev\markdown\MarkdownParser();
 		$this->addExtension(new \Misd\TwigMarkdowner\Twig\Extension\MarkdownerExtension($parser));
 
