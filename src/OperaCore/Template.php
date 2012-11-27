@@ -28,7 +28,7 @@ class Template extends \Twig_Environment
 
 		$this->addExtension(new \natxet\NatxetTwigExtensions\Twig\Extension\PHPFunctionsExtension());
 		$parser = new \dflydev\markdown\MarkdownParser();
-		$this->addExtension(new \Misd\TwigMarkdowner\Twig\Extension\MarkdownerExtension($parser));
+		$this->addExtension(new \Aptoma\Twig\Extension\MarkdownExtension($parser));
 
 		if ( DEBUG ) $this->addExtension( new \Twig_Extensions_Extension_Debug() );
 	}

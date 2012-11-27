@@ -29,7 +29,7 @@
 		"twig/extensions": "*",
 		"swiftmailer/swiftmailer": "4.1.*",
 		"natxet/natxet-twig-extensions": "*",
-		"misd/twig-markdowner": "1.0.*"
+		"aptoma/twig-markdown": "dev-master"
 	},
 	"autoload": {
 		"psr-0": { "OperaCore": "src" }
