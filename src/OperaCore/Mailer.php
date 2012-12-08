@@ -24,7 +24,7 @@ class Mailer
 
 	public function __construct( $c )
 	{
-		require_once( __DIR__ . '/../Swift/lib/swift_required.php' );
+		require_once( VENDOR_PATH . 'swiftmailer/swiftmailer/lib/swift_required.php' );
 		$this->defaults          = $c['email_defaults'];
 		$this->transports_config = $c['smtp_gateways'];
 
