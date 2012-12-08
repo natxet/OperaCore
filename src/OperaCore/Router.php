@@ -154,7 +154,7 @@ class Router
 
 	protected function composeAbsoluteURL( $hostname, $uri )
 	{
-		$port = ( '80' == $this->port ) ? '' : ":{$this->port}";
+		$port = ( '80' == $this->port || !$this->port ) ? '' : ":{$this->port}";
 		return $this->scheme . '://' . $hostname . $port . $uri;
 	}
 
