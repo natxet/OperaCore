@@ -12,42 +12,42 @@ class Router
 	const DEFAULT_PARAM_REGEX = '[a-z0-9-]+';
 
 	/**
-	 * @var array
+	 * @var array an array with all the routes
 	 */
 	protected $routes;
 
 	/**
-	 * @var I18n
+	 * @var I18n The Internacionalization class
 	 */
 	protected $i18n;
 
 	/**
-	 * @var string
+	 * @var string https or http
 	 */
 	protected $scheme;
 
 	/**
-	 * @var string
+	 * @var string all the hostname
 	 */
 	protected $hostname;
 
 	/**
-	 * @var string
+	 * @var string the port, 80 by default
 	 */
 	protected $port;
 
 	/**
-	 * @var string
+	 * @var string whatever defined as base domain
 	 */
 	protected $domain;
 
 	/**
-	 * @var string
+	 * @var string subdomain or subdomains
 	 */
 	protected $subdomain;
 
 	/**
-	 * @var string
+	 * @var string the request uri
 	 */
 	protected $uri;
 
@@ -167,13 +167,19 @@ class Router
 		$this->hostname  = urldecode( $request->getHost() );
 		$this->port      = $request->getPort();
 		$this->scheme    = $request->getScheme();
-		$this->subdomain = preg_replace( '/\.?' . str_replace('.', '\\.', BASE_HOSTNAME) . '/' , '', $this->hostname );
 		$this->domain    = BASE_HOSTNAME;
+		$this->subdomain = preg_replace( '/\.?' . str_replace('.', '\\.', $this->domain) . '/' , '', $this->hostname );
 	}
 
-	public function getRoute()
+	public function getRoute( $uri = NULL, $subdomain = NULL )
 	{
-		define( 'PROFILE', preg_match( '/.*' . self::PROFILE_SUFFIX . '$/', $this->uri ) );
+		if(!$uri) $uri = $this->getUri();
+		if(!$subdomain) $subdomain = $this->getSubdomain();
+
+		if( !defined( 'PROFILE' ) )
+		{
+			define( 'PROFILE', preg_match( '/.*' . self::PROFILE_SUFFIX . '$/', $this->uri ) );
+		}
 
 		foreach ( $this->routes as $k => $v )
 		{
@@ -182,15 +188,15 @@ class Router
 			if ( isset( $v['subdomain'] ) )
 			{
 				// if the subdomain matches the config
-				if ( preg_match_all( $v['subdomain_regex'], $this->subdomain, $matches_subdomain ) )
+				if ( preg_match_all( $v['subdomain_regex'], $subdomain, $matches_subdomain ) )
 				{
 					array_shift( $matches_subdomain );
-					$profile['subdomain'] = "FOUND! $this->subdomain subdomain DOES match " . $v['subdomain_regex'];
+					$profile['subdomain'] = "FOUND! $subdomain subdomain DOES match " . $v['subdomain_regex'];
 				}
 				else
 				{
 					// if not, we profile and go for next route_key (continue foreach)
-					$profile['subdomain'] = "Not found: $this->subdomain subdomain does not match " . $v['subdomain_regex'];
+					$profile['subdomain'] = "Not found: $subdomain subdomain does not match " . $v['subdomain_regex'];
 					Profile::collect( 'Route', $profile );
 					continue;
 				}
@@ -202,10 +208,10 @@ class Router
 			}
 
 			// if the uri matches the config
-			if ( preg_match_all( $v['pattern_regex'], $this->uri, $matches ) )
+			if ( preg_match_all( $v['pattern_regex'], $uri, $matches ) )
 			{
 
-				$profile['uri'] = "FOUND! $this->uri uri DOES match " . $v['pattern_regex'];
+				$profile['uri'] = "FOUND! $uri uri DOES match " . $v['pattern_regex'];
 
 				array_shift( $matches );
 				$matches   = array_merge( $matches_subdomain, $matches );
@@ -215,13 +221,13 @@ class Router
 				break;
 			}
 
-			$profile['uri'] = "Not found: $this->uri uri does not match " . $v['pattern_regex'];
+			$profile['uri'] = "Not found: $uri uri does not match " . $v['pattern_regex'];
 			Profile::collect( 'Route', $profile );
 		}
 
 		if ( !isset( $route_key ) )
 		{
-			throw new \OperaCore\Exception\PageNotFound( $this->uri );
+			throw new \OperaCore\Exception\PageNotFound( $uri );
 		}
 
 		$route  = $this->routes[$route_key];
@@ -238,6 +244,54 @@ class Router
 			}
 		}
 
-		return array( $route['controller'], $route['action'], $params );
+		return array( $route['controller'], $route['action'], $params, $route_key );
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDomain()
+	{
+		return $this->domain;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSubdomain()
+	{
+		return $this->subdomain;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getUri()
+	{
+		return $this->uri;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getHostname()
+	{
+		return $this->hostname;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPort()
+	{
+		return $this->port;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getScheme()
+	{
+		return $this->scheme;
 	}
 }
