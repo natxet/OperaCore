@@ -40,7 +40,7 @@ abstract class CliScript
 	 */
 	public function __construct( $argv, $container )
 	{
-		$this->container = $container;
+		$this->setContainer( $container );
 		$this->run( $argv );
 	}
 
