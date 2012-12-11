@@ -5,7 +5,7 @@ namespace OperaCore;
  * Date: 07/02/12
  */
 
-abstract class CliScript
+abstract class CliScript extends Controller
 {
 	/**
 	 * color green
