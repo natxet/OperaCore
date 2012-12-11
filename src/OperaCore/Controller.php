@@ -52,15 +52,16 @@ abstract class Controller
 	 */
 	protected $this_is_a_redirection = false;
 
+	protected $profile = false;
+
 	public function __construct( $container )
 	{
-		$this->container   = $container;
-		$this->template    = $container['Template'];
+		$this->setContainer( $container );
 		$this->request_uri = $container['Request']->getRequestUri();
-		$this->response    = $container['Response'];
 		$charset = $this->container['Config']->get( 'main', 'app', 'encoding' );
-		$this->response->setCharset( $charset );
-		$this->response->setPublic();
+		$this->getResponse()->setCharset( $charset );
+		$this->getResponse()->setPublic();
+		$this->profile = ( defined('PROFILE') && PROFILE );
 	}
 
 	public function action( $action, $params )
@@ -83,7 +84,7 @@ abstract class Controller
 
 	protected function render( $template, $print = true )
 	{
-		if ( PROFILE ) $this->renderPreProfile( $template );
+		if ( $this->profile ) $this->renderPreProfile( $template );
 
 		$content = $this->renderTemplate( $template );
 
@@ -92,29 +93,22 @@ abstract class Controller
 
 	protected function renderResponse( $content ) {
 
-		$this->response->setContent( $content );
+		$this->getResponse()->setContent( $content );
 		// TODO: $response->prepare($request); ?
-		// die( $this->response->__toString());
-		$res = $this->response->send();
+		// die( $this->getResponse()->__toString());
+		$res = $this->getResponse()->send();
 
-		if ( PROFILE ) Profile::Checkpoint( 'Controller - Template Printed' );
+		if ( $this->profile ) Profile::Checkpoint( 'Controller - Template Printed' );
 
 		return $res;
 	}
 
 	protected function renderTemplate( $template )
 	{
-		// TODO: mal implementado, esto hará que se use siempre session y no poder varnizar
-		/*$session_message = $this->getSessionMessage();
-		if( $session_message)
-		{
-			$this->addMessage( $session_message['message'], $session_message['type'] );
-		}*/
+		$this->getTemplate()->addGlobal( 'messages', $this->messages );
+		$content = $this->getTemplate()->render( $template, $this->context );
 
-		$this->template->addGlobal( 'messages', $this->messages );
-		$content = $this->template->render( $template, $this->context );
-
-		if ( PROFILE ) Profile::Checkpoint( 'Controller - Template Rendered' );
+		if ( $this->profile ) Profile::Checkpoint( 'Controller - Template Rendered' );
 
 		return $content;
 	}
@@ -133,16 +127,16 @@ abstract class Controller
 
 	protected function response()
 	{
-		$this->response->send();
+		$this->getResponse()->send();
 	}
 
 	protected function renderJson( $js_var = false )
 	{
-		$this->response->headers->set( 'Content-Type', 'application/json', true);
+		$this->getResponse()->headers->set( 'Content-Type', 'application/json', true);
 
 		$allow_origin = $this->container['Config']->get( 'main', 'paths', 'allow_origin' );
-		$this->response->headers->set( 'Access-Control-Allow-Origin', $allow_origin);
-		$this->response->headers->set( 'Access-Control-Allow-Credentials', 'true');
+		$this->getResponse()->headers->set( 'Access-Control-Allow-Origin', $allow_origin);
+		$this->getResponse()->headers->set( 'Access-Control-Allow-Credentials', 'true');
 
 		$content = ( $js_var ) ? "var $js_var = " : '';
 		$content .= json_encode( $this->context );
@@ -172,8 +166,8 @@ abstract class Controller
 				break;
 		}
 
-		$this->response->setContent( $content );
-		$this->response->send();
+		$this->getResponse()->setContent( $content );
+		$this->getResponse()->send();
 	}
 
 	protected function redirect( $destination, $permanent = true )
@@ -190,12 +184,12 @@ abstract class Controller
 				'destination' => $destination
 			);
 			$this->render( 'redirectionDebug.html.twig' );
-			var_dump($_SESSION);
+			if( isset( $_SESSION ) ) var_dump( $_SESSION );
 		}
 		else
 		{
-			$this->response = new \Symfony\Component\HttpFoundation\RedirectResponse( $destination, $status );
-			$this->response->send();
+			$this->setResponse( new \Symfony\Component\HttpFoundation\RedirectResponse( $destination, $status ) );
+			$this->getResponse()->send();
 		}
 
 		die();
@@ -261,5 +255,62 @@ abstract class Controller
 			case 'int': $param = (int) $param;
 		}
 		return $param;
+	}
+
+	/**
+	 * @param \Symfony\Component\HttpFoundation\Response $response
+	 */
+	public function setResponse( $response )
+	{
+		$this->response = $response;
+	}
+
+	/**
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function getResponse()
+	{
+		if( !isset($this->response) )
+		{
+			$this->setResponse($this->container['Response']);
+		}
+
+		return $this->response;
+	}
+
+	/**
+	 * @param \OperaCore\Container $container
+	 */
+	public function setContainer( $container )
+	{
+		$this->container = $container;
+	}
+
+	/**
+	 * @return \OperaCore\Container
+	 */
+	public function getContainer()
+	{
+		return $this->container;
+	}
+
+	/**
+	 * @param \OperaCore\Template $template
+	 */
+	public function setTemplate( $template )
+	{
+		$this->template = $template;
+	}
+
+	/**
+	 * @return \OperaCore\Template
+	 */
+	public function getTemplate()
+	{
+		if( !isset($this->template) )
+		{
+			$this->setTemplate($this->container['Template']);
+		}
+		return $this->template;
 	}
 }
