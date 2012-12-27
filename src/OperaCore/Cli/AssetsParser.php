@@ -57,6 +57,8 @@ class AssetsParser extends \OperaCore\CliScript
 		$framework_assets = $config->get( 'main', 'framework_assets', 'assets' );
 		$assets_config    = $this->processFrameworkAssets( "{$this->app_path}public/", $framework_assets );
 
+		echo "\nProcessing Application assets\n";
+
 		$assets = $config->get( 'main', 'assets', 'assets' );
 		foreach ( $assets as $asset )
 		{
@@ -96,10 +98,13 @@ class AssetsParser extends \OperaCore\CliScript
 	function processFrameworkAssets( $app_public_path, $assets )
 	{
 		echo "\nProcessing framework assets\n";
+		if(!count($assets)) echo " - No framework assets to process";
 
 		$assets_config = array();
 		foreach ( $assets as $asset )
 		{
+			echo " - $asset\n";
+
 			list( $basename, $extension ) = explode( '.', $asset );
 
 			$app_asset_name = preg_replace( '/(.*)(\.[a-z]+)/', '\1.fw\2', $asset );
