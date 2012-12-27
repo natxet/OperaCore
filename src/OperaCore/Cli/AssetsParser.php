@@ -79,7 +79,7 @@ class AssetsParser extends \OperaCore\CliScript
 			);
 		}
 
-		$config_filename = ( $env == 'dev' ) ? 'assets.gen.dev.ini' : 'assets.gen.ini';
+		$config_filename = ( $env == 'prod' ) ? "assets.gen.ini" : "assets.$env.gen.ini" ;
 		echo "\nWriting config file $gen_config_path$config_filename\n";
 		echo $config->write_ini(
 			$assets_config, $gen_config_path . $config_filename,
