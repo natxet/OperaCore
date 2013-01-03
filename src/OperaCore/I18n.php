@@ -83,7 +83,7 @@ class I18n
 		}
 		if ( !isset( $language ) ) $language = $c['Config']->get( 'main', 'locale', 'default' );
 
-		$this->_language = $language;
+		$this->_language = trim( $language );
 	}
 
 	protected function definitions( $c ) {
