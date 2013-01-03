@@ -116,27 +116,27 @@ class I18n
 		if ( ( $setlocale_res != $language && $lang == $setlocale_res ) || empty( $setlocale_res ) )
 		{
 			throw new \Exception( sprintf(
-				"Tried: setlocale to ' % s', but could only set to ' % s'.", $language, $setlocale_res
+				"Tried: setlocale to '%s', but could only set to '%s'.", $language, $setlocale_res
 			) );
 		}
 
 		$bindtextdomain_res = bindtextdomain( self::MESSAGES_DOMAIN, $this->_locale_path );
 		if ( empty( $bindtextdomain_res ) ) throw new \Exception( sprintf(
-			"Tried: bindtextdomain, ' % s', to directory, ' % s', but received ' % s'", self::MESSAGES_DOMAIN,
+			"Tried: bindtextdomain, '%s', to directory, '%s', but received '%s'", self::MESSAGES_DOMAIN,
 			$this->_locale_path, $bindtextdomain_res
 		) );
 		bind_textdomain_codeset( self::MESSAGES_DOMAIN, $this->_encoding );
 
 		$bindtextdomain_res = bindtextdomain( self::ROUTES_DOMAIN, $this->_locale_path );
 		if ( empty( $bindtextdomain_res ) ) throw new \Exception( sprintf(
-			"Tried: bindtextdomain, ' % s', to directory, ' % s', but received ' % s'", self::ROUTES_DOMAIN,
+			"Tried: bindtextdomain, '%s', to directory, '%s', but received '%s'", self::ROUTES_DOMAIN,
 			$this->_locale_path, $bindtextdomain_res
 		) );
 		bind_textdomain_codeset( self::ROUTES_DOMAIN, $this->_encoding );
 
 		$textdomain_res = textdomain( self::MESSAGES_DOMAIN );
 		if ( empty( $textdomain_res ) ) throw new \Exception( sprintf(
-			"Tried: set textdomain to ' % s', but got ' % s'", $this->_domain, $textdomain_res
+			"Tried: set textdomain to '%s', but got '%s'", $this->_domain, $textdomain_res
 		) );
 	}
 
