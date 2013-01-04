@@ -41,6 +41,7 @@ abstract class CliScript extends Controller
 	public function __construct( $argv, $container )
 	{
 		$this->setContainer( $container );
+		if(!defined('LANG')) define('LANG', $this->container['Config']->get( 'main', 'locale', 'default' ) );
 		$this->run( $argv );
 	}
 
