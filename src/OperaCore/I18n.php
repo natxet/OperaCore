@@ -83,6 +83,10 @@ class I18n
 		}
 		if ( !isset( $language ) ) $language = $c['Config']->get( 'main', 'locale', 'default' );
 
+		if( !isset($language) ) {
+			throw new Exception("Please review the [locales_patterns] for the environment, seems that this hostname is unknown");
+		}
+
 		$this->_language = trim( $language );
 	}
 
