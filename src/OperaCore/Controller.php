@@ -62,6 +62,12 @@ abstract class Controller
 		$this->getResponse()->setCharset( $charset );
 		$this->getResponse()->setPublic();
 		$this->profile = ( defined('PROFILE') && PROFILE );
+		// Use config > main > app > trust_proxy_headers como 1 o 0 for Request to trustProxyData
+		// Even though we put "true", the config returns "1" as a string
+		$using_proxy = $this->container['Config']->get( 'main', 'app', 'trust_proxy_headers' );
+		if( $using_proxy === "1" ) {
+			$this->container['Request']->trustProxyData();
+		}
 	}
 
 	public function action( $action, $params )
