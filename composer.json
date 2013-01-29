@@ -29,7 +29,8 @@
 		"twig/extensions": "*",
 		"swiftmailer/swiftmailer": "4.1.*",
 		"natxet/natxet-twig-extensions": "*",
-		"aptoma/twig-markdown": "dev-master"
+		"aptoma/twig-markdown": "dev-master",
+		"facebook/php-sdk": "dev-master"
 	},
 	"autoload": {
 		"psr-0": { "OperaCore": "src" }
