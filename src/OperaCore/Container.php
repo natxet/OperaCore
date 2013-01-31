@@ -28,10 +28,11 @@ class Container extends \Pimple
 	{
 		$this['config_path'] = APP_PATH . Bootstrap::CONFIG_REL_PATH;
 		$this['config_env']  = ENV;
+		$this['assets_config_file'] = $this['config_env'] == 'prod' ? 'gen/assets.gen' : "gen/assets.{$this['config_env']}.gen" ;
 		$this['Config']      = $this->share(
 			function ( $this )
 			{
-				return new Config( array( 'main', 'database', 'routes', 'gen/assets.gen' ), $this['config_env'], $this['config_path'] );
+				return new Config( array( 'main', 'database', 'routes', $this['assets_config_file'] ), $this['config_env'], $this['config_path'] );
 			}
 		);
 
@@ -43,7 +44,7 @@ class Container extends \Pimple
 		);
 
 		$assets = array();
-		foreach ( $this['Config']->get( 'gen/assets.gen' ) as $k => $v )
+		foreach ( $this['Config']->get( $this['assets_config_file'] ) as $k => $v )
 		{
 			$assets[$k] = $v['url'];
 		}
