@@ -30,8 +30,8 @@ class OauthFacebook implements Oauth
 		$this->provider                    = new Facebook( $this->config );
 	}
 
-	/**
-	 * @return string
+	/*
+	 * @return string|null
 	 */
 	public function getUserId()
 	{
@@ -43,17 +43,17 @@ class OauthFacebook implements Oauth
 	 */
 	public function getUserData()
 	{
-		$user_data = $this->provider->api( '/me' );
-
-		return array(
-			'id'         => $user_data['id'],
-			'username'   => $user_data['username'],
-			'email'      => $user_data['email'],
-			'name'       => $user_data['name'],
-			'first_name' => $user_data['first_name'],
-			'last_name'  => $user_data['last_name']
-		);
+		return $this->provider->api( '/me' );
 	}
+
+	/**
+	 * @return array|null
+	 */
+	public function getUserFriends()
+	{
+		return $this->provider->api( '/me/friends' );
+	}
+
 
 	/**
 	 * @return string the url for login
@@ -61,6 +61,11 @@ class OauthFacebook implements Oauth
 	public function getLoginUrl()
 	{
 		return $this->provider->getLoginUrl( $this->config['uri_params'] );
+	}
+
+	public function getProvider()
+	{
+		return $this->provider;
 	}
 
 	/**
