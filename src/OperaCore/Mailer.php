@@ -37,11 +37,17 @@ class Mailer
 	 */
 	protected function initTransport( $transport_name )
 	{
-		$config    = $this->transports_config[$transport_name];
-		$transport = \Swift_SmtpTransport::newInstance(
-			$config['hostname'], $config['port'], $config['security']
-		)->setUsername( $config['username'] )->setPassword( $config['password'] );
+		if( 'sendmail' == $transport_name ) {
 
+			$transport = \Swift_SendmailTransport::newInstance('/usr/sbin/sendmail -bs');
+		}
+		else {
+
+			$config    = $this->transports_config[$transport_name];
+			$transport = \Swift_SmtpTransport::newInstance(
+				$config['hostname'], $config['port'], $config['security']
+			)->setUsername( $config['username'] )->setPassword( $config['password'] );
+		}
 		$this->transports[$transport_name] = \Swift_Mailer::newInstance( $transport );
 	}
 
@@ -64,7 +70,7 @@ class Mailer
 	 * @param string $transport_name the gateway to send through
 	 * @return int number of recipients
 	 */
-	public function send( $params, $transport_name = 'sendgrid' )
+	public function send( $params, $transport_name = 'sendmail' )
 	{
 		$params    = $this->checkParams( $params );
 		$transport = $this->getTransport( $transport_name );
