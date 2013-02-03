@@ -74,7 +74,14 @@ abstract class Controller
 	{
 		$this->params = $params;
 		$method = "action$action";
-		return $this->$method( $params ); // dejar de enviar params
+		if( method_exists( $this, $method ) ) {
+
+			return $this->$method( $params ); // dejar de enviar params
+		}
+		else {
+
+			throw new \Exception( get_class( $this ) . "->$method() does not exist" );
+		}
 	}
 
 	protected function getModel( $model )
