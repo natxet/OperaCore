@@ -13,8 +13,7 @@ class Dispatcher
 		{
 			list( $controller, $action, $params ) = $c['Router']->getRoute();
 
-			$class_name = '\\' . APP . '\\Controller\\' . $controller;
-			$controller = new $class_name( $c );
+			$controller = $this->getController( $controller, $c );
 
 			Profile::Checkpoint( 'Routing and Controller Construction' );
 
@@ -22,13 +21,19 @@ class Dispatcher
 		}
 		catch( \OperaCore\Exception\PageNotFound $e )
 		{
-			$class_name = '\\' . APP . '\\Controller\\' . 'Error';
-			$controller = new $class_name( $c );
+			$controller = $this->getController( 'Error', $c );
+
+			Profile::Checkpoint( 'Preparing 404 Controller' );
+
 			$controller->action404( array() );
 		}
 		catch( \Exception $e )
 		{
-			error_log( $e->getMessage() );
+			/*
+			 * this means something really wrong happened
+			 * because getRoute failed
+			 */
+			error_log( $e->getMessage() . "\n >>> " . $e->getTraceAsString() );
 
 			if ( defined( 'PROFILE' ) && PROFILE ) Profile::Collect(
 				'Exception', array(
@@ -37,10 +42,6 @@ class Dispatcher
 				             )
 			);
 
-			/*
-			 * this means something really wrong happened
-			 * because getRoute failed
-			 */
 			if( !defined( 'PROFILE' ) ) die( $e->getMessage() );
 
 			$class_name = '\\' . APP . '\\Controller\\' . 'Error';
@@ -56,5 +57,17 @@ class Dispatcher
 			$profile = new Module\Profile( $c );
 			$profile->actionShow( array() );
 		}
+	}
+
+	/**
+	 * @param $controller string Name of the controller
+	 * @param $container Container
+	 * @return Controller
+	 */
+	protected function getController( $controller, $container )
+	{
+		$class_name = '\\' . APP . '\\Controller\\' . $controller;
+
+		return new $class_name( $container );
 	}
 }
