@@ -55,7 +55,6 @@ class Router
 	{
 		$this->i18n = $c['I18n'];
 		$this->processRequest( $c['Request'] );
-
 		$this->parseRoutes( $routes );
 	}
 
