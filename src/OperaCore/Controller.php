@@ -70,21 +70,33 @@ abstract class Controller
 		}
 	}
 
-	public function action( $action, $params )
+	/**
+	 * @param $name string
+	 * @param $arguments array
+	 */
+	public function __call( $name , $arguments )
 	{
-		$this->params = $params;
-		$method = "action$action";
-//TO-DO: hacer un try-catch aqui
-//		if( method_exists( $this, $method ) ) {
-
-			return $this->$method( $params ); // dejar de enviar params
-//		}
-//		else {
-
-//			throw new \Exception( get_class( $this ) . "->$method() does not exist" );
-//		}
+		if( !method_exists( $this, $name ) )
+		{
+			throw new \Exception( get_class( $this ) . "->$name() does not exist" );
+		}
 	}
 
+	/**
+	 * @param $action string
+	 * @param $params array
+	 */
+	public function action( $action, $params )
+	{
+		$method = "action$action";
+		$this->params = $params;
+		$this->$method( $params );
+	}
+
+	/**
+	 * @param $model string The model name
+	 * @return Model A model class
+	 */
 	protected function getModel( $model )
 	{
 		$class_name = '\\' . APP . '\\Model\\' . $model;
