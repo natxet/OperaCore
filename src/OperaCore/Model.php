@@ -96,7 +96,7 @@ abstract class Model
 	public function fetchOneColumn( $statement, $params = array(), $profile = 'read' )
 	{
 		$res = $this->fetchOne( $statement, $params, $profile );
-		foreach( $res as $k => $v ) return $v;
+		if( $res ) foreach( $res as $k => $v ) return $v;
 		return null;
 	}
 
