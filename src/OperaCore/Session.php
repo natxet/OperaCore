@@ -24,7 +24,10 @@ class Session extends \ArrayObject
 
 	public function offsetUnset( $index )
 	{
-		parent::offsetUnset( $index );
-		$this->sync();
+		if( $this->offsetExists( $index ) )
+		{
+			parent::offsetUnset( $index );
+			$this->sync();
+		}
 	}
 }
