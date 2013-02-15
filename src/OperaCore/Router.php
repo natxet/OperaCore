@@ -247,6 +247,14 @@ class Router
 	}
 
 	/**
+	 * @return array of routes
+	 */
+	public function getRoutes()
+	{
+		return $this->routes;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getDomain()
