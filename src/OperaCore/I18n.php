@@ -75,16 +75,22 @@ class I18n
 		foreach ( $locales_patterns as $possible_locale => $pattern )
 		{
 			// We add possible subdomains, and put slashes in points
-			if ( preg_match( '/^' . '(?:.+\.)?' . str_replace( '.', '\\.', $pattern ) . '$/', $subject ) )
+			$regex = '/^' . '(?:.+\.)?' . str_replace( '.', '\\.', $pattern ) . '(?:\:[0-9]+)?$/';
+			if ( preg_match( $regex, $subject ) )
 			{
 				$language = $possible_locale;
 				break;
 			}
 		}
-		if ( !isset( $language ) ) $language = $c['Config']->get( 'main', 'locale', 'default' );
 
-		if( !isset($language) ) {
-			throw new Exception("Please review the [locales_patterns] for the environment, seems that this hostname is unknown");
+		if ( empty( $language ) )
+		{
+			$language = $c['Config']->get( 'main', 'locale', 'default' );
+		}
+
+		if( empty( $language ) )
+		{
+			throw new \Exception("Hostname unknown: Review [locales_patterns] in main.ini or main.dev.ini");
 		}
 
 		$this->_language = trim( $language );
