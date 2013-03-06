@@ -18,6 +18,8 @@ class AssetsParser extends \OperaCore\CliScript
 
 	protected $app_path;
 
+	protected $assets_folder;
+
 	/**
 	 * @param array $argv the cli argv
 	 */
@@ -49,13 +51,14 @@ class AssetsParser extends \OperaCore\CliScript
 		$config      = $this->container['Config'];
 		self::$paths = $config->get( 'main', 'paths' );
 
-		foreach ( $this->types as $type )
-		{
-			$this->deleteGeneratedFiles( "{$this->app_path}public/$type/", $env );
+		$this->assets_folder = $this->app_path . $config->get( 'main', 'app', 'static_folder' );
+
+		foreach ( $this->types as $type ) {
+			$this->deleteGeneratedFiles( $this->assets_folder . $type . "/", $env );
 		}
 
 		$framework_assets = $config->get( 'main', 'framework_assets', 'assets' );
-		$assets_config    = $this->processFrameworkAssets( "{$this->app_path}public/", $framework_assets );
+		$assets_config    = $this->processFrameworkAssets( $this->assets_folder, $framework_assets );
 
 		echo "\nProcessing Application assets\n";
 
@@ -132,14 +135,14 @@ class AssetsParser extends \OperaCore\CliScript
 
 	function deleteGeneratedFiles( $path, $env )
 	{
-		foreach ( new \DirectoryIterator( $path ) as $file )
-		{
-			$filename = $file->getFilename();
+		if (is_dir( $path )) {
+			foreach ( new \DirectoryIterator( $path ) as $file ) {
+				$filename = $file->getFilename();
 
-			if ( preg_match( "/.*\\.$env\\.gen\\.(" . implode( '|', $this->types ) . ")/", $filename ) )
-			{
-				echo "unlinking $path$filename ";
-				echo unlink( "$path$filename" ) . "\n";
+				if (preg_match( "/.*\\.$env\\.gen\\.(" . implode( '|', $this->types ) . ")/", $filename )) {
+					echo "unlinking $path$filename ";
+					echo unlink( "$path$filename" ) . "\n";
+				}
 			}
 		}
 	}
@@ -148,7 +151,7 @@ class AssetsParser extends \OperaCore\CliScript
 	{
 		$files    = explode( ',', $basenames );
 		list( , $extension ) = explode( '.', $files[0] );
-		$path     = "{$this->app_path}public/$extension/";
+		$path = $this->assets_folder . "$extension/";
 
 		$filename = str_replace( ',', '_', $basenames );
 		$filename = str_replace( ".$extension", '', $filename );
@@ -167,7 +170,7 @@ class AssetsParser extends \OperaCore\CliScript
 
 	function parseAndMinify( $basename, $extension, $env = 'dev' )
 	{
-		$path     = "{$this->app_path}public/$extension/";
+		$path     = $this->assets_folder . "$extension/";
 		$filename = "$basename.$extension";
 		echo "\nParsing $path$filename \n";
 
