@@ -46,6 +46,10 @@ abstract class Controller
 	 */
 	protected $session;
 
+	/**
+	 * @var string the code of the called route
+	 */
+	protected $route_key;
 
 	/**
 	 * @var bool just for the case we print a redirection template
@@ -58,43 +62,47 @@ abstract class Controller
 	{
 		$this->setContainer( $container );
 		$this->request_uri = $container['Request']->getRequestUri();
-		$charset = $this->container['Config']->get( 'main', 'app', 'encoding' );
+		$charset           = $this->container['Config']->get( 'main', 'app', 'encoding' );
 		$this->getResponse()->setCharset( $charset );
 		$this->getResponse()->setPublic();
-		$this->profile = ( defined('PROFILE') && PROFILE );
+		$this->profile = ( defined( 'PROFILE' ) && PROFILE );
 		// Use config > main > app > trust_proxy_headers como 1 o 0 for Request to trustProxyData
 		// Even though we put "true", the config returns "1" as a string
 		$using_proxy = $this->container['Config']->get( 'main', 'app', 'trust_proxy_headers' );
-		if( $using_proxy === "1" ) {
+		if ($using_proxy === "1") {
 			$this->container['Request']->trustProxyData();
 		}
 	}
 
 	/**
-	 * @param $name string
+	 * @param $name      string
 	 * @param $arguments array
+	 *
+	 * @throws \Exception
 	 */
-	public function __call( $name , $arguments )
+	public function __call( $name, $arguments )
 	{
-		if( !method_exists( $this, $name ) )
-		{
+		if (!method_exists( $this, $name )) {
 			throw new \Exception( get_class( $this ) . "->$name() does not exist" );
 		}
 	}
 
 	/**
-	 * @param $action string
-	 * @param $params array
+	 * @param $action    string
+	 * @param $params    array
+	 * @param $route_key string
 	 */
-	public function action( $action, $params )
+	public function action( $action, $params, $route_key )
 	{
-		$method = "action$action";
-		$this->params = $params;
+		$method          = "action$action";
+		$this->route_key = $route_key;
+		$this->params    = $params;
 		$this->$method( $params );
 	}
 
 	/**
 	 * @param $model string The model name
+	 *
 	 * @return Model A model class
 	 */
 	protected function getModel( $model )
@@ -110,21 +118,26 @@ abstract class Controller
 
 	protected function render( $template, $print = true )
 	{
-		if ( $this->profile ) $this->renderPreProfile( $template );
+		if ($this->profile) {
+			$this->renderPreProfile( $template );
+		}
 
 		$content = $this->renderTemplate( $template );
 
 		return ( $print ) ? $this->renderResponse( $content ) : $content;
 	}
 
-	protected function renderResponse( $content ) {
+	protected function renderResponse( $content )
+	{
 
 		$this->getResponse()->setContent( $content );
 		// TODO: $response->prepare($request); ?
 		// die( $this->getResponse()->__toString());
 		$res = $this->getResponse()->send();
 
-		if ( $this->profile ) Profile::Checkpoint( 'Controller - Template Printed' );
+		if ($this->profile) {
+			Profile::Checkpoint( 'Controller - Template Printed' );
+		}
 
 		return $res;
 	}
@@ -134,7 +147,7 @@ abstract class Controller
 		$this->getTemplate()->addGlobal( 'messages', $this->messages );
 		$content = $this->getTemplate()->render( $template, $this->context );
 
-		if ( $this->profile ) Profile::Checkpoint( 'Controller - Template Rendered' );
+		if ($this->profile) Profile::Checkpoint( 'Controller - Template Rendered' );
 
 		return $content;
 	}
@@ -144,10 +157,11 @@ abstract class Controller
 		Profile::Checkpoint( 'Controller - Action executed: starting render' );
 
 		Profile::Collect(
-			'Templates', array(
-			                  "template"   => $template,
-			                  'context'    => $this->context
-			             )
+			'Templates',
+			array(
+			     "template" => $template,
+			     'context'  => $this->context
+			)
 		);
 	}
 
@@ -158,17 +172,16 @@ abstract class Controller
 
 	protected function renderJson( $js_var = false )
 	{
-		$this->getResponse()->headers->set( 'Content-Type', 'application/json', true);
+		$this->getResponse()->headers->set( 'Content-Type', 'application/json', true );
 
 		$allow_origin = $this->container['Config']->get( 'main', 'paths', 'allow_origin' );
-		$this->getResponse()->headers->set( 'Access-Control-Allow-Origin', $allow_origin);
-		$this->getResponse()->headers->set( 'Access-Control-Allow-Credentials', 'true');
+		$this->getResponse()->headers->set( 'Access-Control-Allow-Origin', $allow_origin );
+		$this->getResponse()->headers->set( 'Access-Control-Allow-Credentials', 'true' );
 
 		$content = ( $js_var ) ? "var $js_var = " : '';
 		$content .= json_encode( $this->context );
 
-		switch ( json_last_error() )
-		{
+		switch (json_last_error()) {
 
 			case JSON_ERROR_NONE:
 				break;
@@ -202,18 +215,15 @@ abstract class Controller
 
 		$this->this_is_a_redirection = true;
 
-		if ( DEBUG )
-		{
+		if (DEBUG) {
 			$this->context = array(
 				'seconds'     => 60,
 				'status'      => $status,
 				'destination' => $destination
 			);
 			$this->render( 'redirectionDebug.html.twig' );
-			if( isset( $_SESSION ) ) var_dump( $_SESSION );
-		}
-		else
-		{
+			if (isset( $_SESSION )) var_dump( $_SESSION );
+		} else {
 			$this->setResponse( new \Symfony\Component\HttpFoundation\RedirectResponse( $destination, $status ) );
 			$this->getResponse()->send();
 		}
@@ -221,7 +231,7 @@ abstract class Controller
 		die();
 	}
 
-	protected function paginator( $base_url, $total_rows, $current_page, $results_per_page, $num_pages = NULL )
+	protected function paginator( $base_url, $total_rows, $current_page, $results_per_page, $num_pages = null )
 	{
 		$paginator = new \OperaCore\Module\Paginator( $this->container );
 
@@ -235,15 +245,14 @@ abstract class Controller
 
 	public function setSessionMessage( $message, $type = self::TEMPLATE_MESSAGE_INFO )
 	{
-		$this->setSessionVar( 'session_message', array( 'type' => $type, 'message' => $message) );
+		$this->setSessionVar( 'session_message', array( 'type' => $type, 'message' => $message ) );
 	}
 
-	public function getSessionMessage( )
+	public function getSessionMessage()
 	{
 		$session_message = $this->getSessionVar( 'session_message' );
 
-		if( !$this->this_is_a_redirection )
-		{
+		if (!$this->this_is_a_redirection) {
 			$this->unsetSessionVar( 'session_message' );
 		}
 
@@ -252,20 +261,20 @@ abstract class Controller
 
 	public function getSessionVar( $key )
 	{
-		if( !isset( $this->session ) ) $this->session = $this->container['Session'];
-		return isset( $this->session[$key] ) ? $this->session[$key] : NULL;
+		if (!isset( $this->session )) $this->session = $this->container['Session'];
+		return isset( $this->session[$key] ) ? $this->session[$key] : null;
 	}
 
 	public function setSessionVar( $key, $value )
 	{
-		if( !isset( $this->session ) ) $this->session = $this->container['Session'];
+		if (!isset( $this->session )) $this->session = $this->container['Session'];
 		$this->session[$key] = $value;
 	}
 
 	public function unsetSessionVar( $key )
 	{
-		if( !isset( $this->session ) ) $this->session = $this->container['Session'];
-		if( isset( $this->session[$key] ) ) unset( $this->session[$key] );
+		if (!isset( $this->session )) $this->session = $this->container['Session'];
+		if (isset( $this->session[$key] )) unset( $this->session[$key] );
 	}
 
 	protected function getTransVar( $trans, $vars )
@@ -273,12 +282,12 @@ abstract class Controller
 		return str_replace( array_keys( $vars ), array_values( $vars ), gettext( $trans ) );
 	}
 
-	protected function getParam( $key, $type = NULL )
+	protected function getParam( $key, $type = null )
 	{
-		$param = isset($this->params[$key]) ? $this->params[$key] : NULL;
-		switch( $type )
-		{
-			case 'int': $param = (int) $param;
+		$param = isset( $this->params[$key] ) ? $this->params[$key] : null;
+		switch ($type) {
+			case 'int':
+				$param = (int) $param;
 		}
 		return $param;
 	}
@@ -296,9 +305,8 @@ abstract class Controller
 	 */
 	public function getResponse()
 	{
-		if( !isset($this->response) )
-		{
-			$this->setResponse($this->container['Response']);
+		if (!isset( $this->response )) {
+			$this->setResponse( $this->container['Response'] );
 		}
 
 		return $this->response;
@@ -333,9 +341,8 @@ abstract class Controller
 	 */
 	public function getTemplate()
 	{
-		if( !isset($this->template) )
-		{
-			$this->setTemplate($this->container['Template']);
+		if (!isset( $this->template )) {
+			$this->setTemplate( $this->container['Template'] );
 		}
 		return $this->template;
 	}
