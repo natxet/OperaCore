@@ -54,8 +54,9 @@ class I18n
 	}
 
 	/**
+	 * @param $c
 	 *
-	 * @param $c Container
+	 * @throws \Exception
 	 */
 	protected function guessLanguage( $c )
 	{
