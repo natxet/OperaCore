@@ -11,13 +11,13 @@ class Dispatcher
 	{
 		try
 		{
-			list( $controller, $action, $params ) = $c['Router']->getRoute();
+			list( $controller, $action, $params, $route_key ) = $c['Router']->getRoute();
 
 			$controller = $this->getController( $controller, $c );
 
 			Profile::Checkpoint( 'Routing and Controller Construction' );
 
-			$controller->action( $action, $params );
+			$controller->action( $action, $params, $route_key );
 		}
 		catch( \OperaCore\Exception\PageNotFound $e )
 		{
