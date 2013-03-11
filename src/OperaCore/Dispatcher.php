@@ -52,7 +52,7 @@ class Dispatcher
 
 		Profile::Checkpoint( 'Controller action executed. End of OperaCore' );
 
-		if( DEBUG && PROFILE )
+		if( defined( 'DEBUG' ) && DEBUG && defined( 'PROFILE' ) && PROFILE )
 		{
 			$profile = new Module\Profile( $c );
 			$profile->actionShow( array() );
