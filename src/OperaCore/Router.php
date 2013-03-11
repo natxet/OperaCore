@@ -175,6 +175,11 @@ class Router
 		if(!$uri) $uri = $this->getUri();
 		if(!$subdomain) $subdomain = $this->getSubdomain();
 
+        if($subdomain == $this->hostname) {
+            $this->subdomain = '';
+            throw new \OperaCore\Exception\PageNotFound();
+        };
+
 		if( !defined( 'PROFILE' ) )
 		{
 			define( 'PROFILE', preg_match( '/.*' . self::PROFILE_SUFFIX . '$/', $this->uri ) );
