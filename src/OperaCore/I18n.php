@@ -151,12 +151,20 @@ class I18n
 		) );
 	}
 
+	/**
+	* Used at parseTranlations, parses a route message located in the matches of a preg_*
+	*
+	**/
 	public function translateRouteMessage( $matches ) {
 
-		if(empty($matches[1])) return '';
-		return dgettext( self::ROUTES_DOMAIN, $matches[1]);
+		return ( empty( $matches[1] ) ) ? '' : dgettext( self::ROUTES_DOMAIN, $matches[1]);
 	}
 
+	/**
+	* Parses all the translations in a string, marked between two braces, f.i. /{{hola}}/test.php
+	* and translates them, returning the string translated: /hello/test.php
+	*
+	**/
 	public function parseTranlations( $string )
 	{
 		return preg_replace_callback( '/{{(.+?)}}/u', 'self::translateRouteMessage', $string );
