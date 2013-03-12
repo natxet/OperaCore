@@ -151,8 +151,14 @@ class I18n
 		) );
 	}
 
+	public function translateRouteMessage( $matches ) {
+
+		if(empty($matches[1])) return '';
+		return dgettext( self::ROUTES_DOMAIN, $matches[1]);
+	}
+
 	public function parseTranlations( $string )
 	{
-		return preg_replace( '/{{(.+?)}}/e', "dgettext( self::ROUTES_DOMAIN, '\\1')", $string );
+		return preg_replace_callback( '/{{(.+?)}}/u', 'self::translateRouteMessage', $string );
 	}
 }
