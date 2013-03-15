@@ -13,7 +13,6 @@ class Database
 	public function __construct( $c )
 	{
 		$this->config = $c['Config']->get( 'database' );
-
 	}
 
 	protected function connect( $profile )
@@ -25,7 +24,8 @@ class Database
 
 		$init_sets = array();
 		if(isset($g['charset'])) $init_sets[]  = "NAMES " . $g['charset'];
-		if(isset($g['locale'])) $init_sets[]  = "lc_time_names = '" . $g['locale'] . "'";
+		$locale = !empty( $g['force_locale'] ) ? $g['force_locale'] : ( defined( 'LOCALE' ) ? LOCALE : NULL );
+		if( !empty( $locale ) ) $init_sets[]  = "lc_time_names = '$locale'";
 		if(count($init_sets)) {
 			$init_commands = array( \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET ' . implode( $init_sets, ',' ) );
 		}
