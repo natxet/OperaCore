@@ -7,7 +7,7 @@ class Varnish
 
 	public function banUrl( $regex )
 	{
-		exec('varnishadm ban.url ~ "' . $regex . '"');
+		exec('varnishadm ban req.url ~ "' . $regex . '"');
 	}
 
 	public function banHost( $regex )
