@@ -22,6 +22,30 @@ abstract class Model
 		$this->container = $c;
 	}
 
+    /**
+     * @param string $statement SQL statement
+     * @param string $profile write or read
+     *
+     * @return \PDOStatement
+     */
+    public function prepare($statement, $profile = 'write')
+    {
+        $db = $this->db->$profile;
+        return $db->prepare( $statement );
+    }
+
+    public function execute( \PDOStatement $sth, $params = array() )
+    {
+        $offset = microtime( true );
+
+        $res = $sth->execute( $params );
+        $affected_rows = $sth->rowCount();
+
+        $this->profile_collect( $offset, $sth->queryString, $params );
+
+        return $affected_rows;
+    }
+
 	/**
 	 * @param $statement    string The SQL statement to execute
 	 * @param $params array The associative array for binding params

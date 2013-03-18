@@ -4,7 +4,8 @@ namespace OperaCore;
 
 class Config
 {
-	const FILE_EXTENSION = 'ini'; // config files extension
+	const INI_FILE_EXTENSION = 'ini'; // ini config files extension
+    const PHP_FILE_EXTENSION = 'php'; // php config files extension
 	const ENV_PREFIX = 'APP_'; // prefix for env configs passed by apache
 
 	protected $domains; // array with the config key->value itself
@@ -12,41 +13,98 @@ class Config
 	protected $env_params = array();
 	protected $env_configs; // array with all args passed by apache
 
+    protected $env;
+    protected $path;
+
 	public function __construct( $domains, $env, $path )
 	{
+        $this->env = $env;
+        $this->path = $path;
 		foreach ( $domains as $domain ) $this->parse_ini( $domain, $env, $path );
 
 		$this->load_env_vars();
 		$this->domains_parsed = $this->parse_env_config( $this->domains );
 	}
 
-	protected function parse_ini( $domain, $env, $path )
-	{
-		$ext                    = self::FILE_EXTENSION;
-		if( !file_exists( "$path/$domain.$ext" ) )
-		{
-			if( DEBUG ) echo "Config error: file does not exists $path/$domain.$ext";
-			return false;
-		}
-		$this->domains[$domain] = parse_ini_file( "$path/$domain.$ext", 1 );
+    /**
+     * Strategy for parsing any kind of config file
+     * @param $filename complete filename, including path, of the config to load
+     * @param $ext the extension (php|ini)
+     *
+     * @return array The desired config
+     */
+    public function parse_file( $filename, $ext)
+    {
+        switch( $ext ) {
+            case 'ini': return parse_ini_file( $filename, 1 ); break;
+            default: return require( $filename );
+        }
+    }
 
-		// in environments different than pro, you can extend config file
-		if ( Bootstrap::PRODUCTION_ENV !== $env )
-		{
+    /**
+     * Called from parse_ini and parse_php, uses parse_file, extends the environments config file
+     *
+     * @param string $domain the basename of the file to parse
+     * @param null   $env the environment (prod|dev)
+     * @param null   $path the path to the config files of the app
+     * @param string $ext the extension (php|ini)
+     *
+     * @return array The desired config
+     */
+    protected function parse_config( $domain, $env = null, $path = null, $ext = 'ini' )
+    {
+        if( empty( $env ) ) $env = $this->env;
+        if( empty( $path ) ) $path = $this->path;
 
-			$ext_filename = "$path/$domain.$env.$ext"; // extended filename
+        if( !file_exists( "$path/$domain.$ext" ) )
+        {
+            if( DEBUG ) echo "Config error: file does not exists $path/$domain.$ext";
+            return false;
+        }
+        $this->domains[$domain] = $this->parse_file( "$path/$domain.$ext", $ext );
 
-			if ( file_exists( $ext_filename ) )
-			{
+        // in environments different than pro, you can extend config file
+        if ( Bootstrap::PRODUCTION_ENV !== $env )
+        {
+            $ext_filename = "$path/$domain.$env.$ext"; // extended filename
 
-				$this->domains[$domain] = Helper::array_merge_recursive_simple(
-					$this->domains[$domain], parse_ini_file( $ext_filename, 1 )
-				);
-			}
-		}
+            if ( file_exists( $ext_filename ) )
+            {
+                $this->domains[$domain] = Helper::array_merge_recursive_simple(
+                    $this->domains[$domain], $this->parse_file( $ext_filename, $ext )
+                );
+            }
+        }
+        return $this->domains[$domain];
+    }
 
-		return true;
-	}
+    /**
+     * Parse a config in a php file
+     *
+     * @param string $domain the basename of the file to parse
+     * @param null   $env the environment (prod|dev)
+     * @param null   $path the path to the config files of the app
+     *
+     * @return array
+     */
+    public function parse_php( $domain, $env = null, $path = null )
+    {
+        return $this->parse_config( $domain, $env, $path, self::PHP_FILE_EXTENSION);
+    }
+
+    /**
+     * Parse a config in a php file
+     *
+     * @param string $domain the basename of the file to parse
+     * @param null   $env the environment (prod|dev)
+     * @param null   $path the path to the config files of the app
+     *
+     * @return array
+     */
+    public function parse_ini( $domain, $env = null, $path = null )
+    {
+        return $this->parse_config( $domain, $env, $path, self::INI_FILE_EXTENSION);
+    }
 
 	protected function load_env_vars()
 	{
@@ -89,7 +147,7 @@ class Config
 		return $value;
 	}
 
-	public function get( $domain, $group = NULL, $key = NULL )
+	public function get( $domain, $group = null, $key = null )
 	{
 
 		if ( is_null( $group ) )
@@ -119,7 +177,7 @@ class Config
 		return array();
 	}
 
-	public function write_ini( $sectionsarray, $filename, $prefix = NULL )
+	public function write_ini( $sectionsarray, $filename, $prefix = null )
 	{
 		$file_contents = $this->array2ini( $sectionsarray );
 		if( $prefix ) $file_contents = $prefix . "\n" . $file_contents;

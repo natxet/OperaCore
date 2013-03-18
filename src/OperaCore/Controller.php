@@ -116,6 +116,11 @@ abstract class Controller
 		return $this->container['Router']->getPath( $route_key, $params, $absolute );
 	}
 
+    public function addContext( $key, $value)
+    {
+        $this->context[$key] = $value;
+    }
+
 	protected function render( $template, $print = true )
 	{
 		if ($this->profile) {
