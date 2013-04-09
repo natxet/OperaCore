@@ -117,6 +117,20 @@ abstract class Model
 		return $res;
 	}
 
+    public function fetchKeyVal( $statement, $key = 0, $val = 1 , $params = array(), $profile = 'read')
+    {
+        $res = $this->fetchAll( $statement, $params, $profile );
+        if (!empty( $res ) && is_array( $res )) return self::traverseKeyVal( $res, $key, $val );
+        return null;
+    }
+
+    static public function traverseKeyVal( Array $array, $key = 'value', $val = 'label' )
+    {
+        $return = array();
+        if( $array ) foreach( $array as $row ) $return[$row[$key]] = $row[$val];
+        return count($return) ? $return : null;
+    }
+
 	public function fetchOneColumn( $statement, $params = array(), $profile = 'read' )
 	{
 		$res = $this->fetchOne( $statement, $params, $profile );
