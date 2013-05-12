@@ -92,12 +92,17 @@ abstract class Controller
 	 * @param $params    array
 	 * @param $route_key string
 	 */
-	public function action( $action, $params, $route_key )
+	public function action( $action, $params = array(), $route_key = '' )
 	{
-		$method          = "action$action";
-		$this->route_key = $route_key;
-		$this->params    = $params;
-		$this->$method( $params );
+        try {
+            $method          = "action$action";
+            $this->route_key = $route_key;
+            $this->params    = $params;
+            $this->$method( $params );
+        }
+        catch( Exception $e ) {
+            var_dump($e->getTraceAsString());die;
+        }
 	}
 
 	/**
@@ -108,6 +113,9 @@ abstract class Controller
 	protected function getModel( $model )
 	{
 		$class_name = '\\' . APP . '\\Model\\' . $model;
+        if(!class_exists( $class_name)) {
+            throw new \Exception( "Class $class_name does not exist" );
+        }
 		return new $class_name( $this->container );
 	}
 

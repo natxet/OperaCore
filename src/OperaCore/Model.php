@@ -145,9 +145,16 @@ abstract class Model
 			$backtrace = debug_backtrace( 3 );
 			if( is_object($backtrace[2]['object']) ) $backtrace[2]['classname'] = get_class( $backtrace[2]['object']);
 			$params2 = $params;
-			array_walk( $params2, function( &$value ) {
-					if( !is_numeric( $value ) ) $value = "'$value'";
-				} );
+            if (is_array( $params2 ) && count( $params2 )) {
+                array_walk(
+                    $params2,
+                    function ( &$value ) {
+                        if (!is_numeric( $value )) {
+                            $value = "'$value'";
+                        }
+                    }
+                );
+            }
 			$statement = str_replace( array_keys( $params2 ), array_values( $params2 ), $statement );
 			Profile::collect( 'Models', array(
 			    'profile'      => $profile,
