@@ -22,9 +22,19 @@ class Router
 	protected $i18n;
 
 	/**
-	 * @var string https or http
+	 * @var string scheme https or http
 	 */
 	protected $scheme;
+
+    /**
+     * @var string default scheme https or http
+     */
+    protected $default_scheme = 'http';
+
+    /**
+     * @var array of allowed schemes
+     */
+    protected $allowed_schemes = array('http', 'https');
 
 	/**
 	 * @var string all the hostname
@@ -35,6 +45,11 @@ class Router
 	 * @var string the port, 80 by default
 	 */
 	protected $port;
+
+    /**
+     * @var array ports that are implicit to the scheme
+     */
+    protected $implicit_ports = array(80, 443);
 
 	/**
 	 * @var string whatever defined as base domain
@@ -53,6 +68,11 @@ class Router
 
 	public function __construct( $c, $routes )
 	{
+        $default_scheme = $c['Config']->get( 'main', 'app', 'default_scheme' );
+        if ($default_scheme) {
+            $this->default_scheme = $default_scheme;
+        }
+
 		$this->i18n = $c['I18n'];
 		$this->processRequest( $c['Request'] );
 		$this->parseRoutes( $routes );
@@ -127,13 +147,15 @@ class Router
 	{
 		if( !array_key_exists( $route_key, $this->routes ) ) return '';
 
-		$r        = $this->routes[$route_key];
-		$uri      = $r['pattern_i18n'];
-		$subdomain = empty( $r['subdomain_i18n'] ) ? '' : "{$r['subdomain_i18n']}.";
-		$hostname = isset( $r['subdomain'] ) ? $subdomain . $this->domain : $this->domain;
+        $r         = $this->routes[$route_key];
+        $uri       = $r['pattern_i18n'];
+        $subdomain = empty( $r['subdomain_i18n'] ) ? '' : "{$r['subdomain_i18n']}.";
+        $hostname  = isset( $r['subdomain'] ) ? $subdomain . $this->domain : $this->domain;
+        $scheme    = isset( $r['scheme'] ) ? $r['scheme'] : $this->default_scheme;
+
 		if( $absolute )
 		{
-			$path = $this->composeAbsoluteURL( $hostname, $uri );
+			$path = $this->composeAbsoluteURL( $hostname, $uri, $scheme );
 		}
 		else
 		{
@@ -151,10 +173,11 @@ class Router
 		return $path;
 	}
 
-	protected function composeAbsoluteURL( $hostname, $uri )
+	protected function composeAbsoluteURL( $hostname, $uri, $scheme = null )
 	{
-		$port = ( '80' == $this->port || !$this->port ) ? '' : ":{$this->port}";
-		return $this->scheme . '://' . $hostname . $port . $uri;
+        if( !in_array( $scheme, $this->allowed_schemes) ) $scheme = $this->scheme;
+        $port = ( in_array( $this->port, $this->implicit_ports ) || !$this->port ) ? '' : ":{$this->port}";
+        return $scheme . '://' . $hostname . $port . $uri;
 	}
 
 	/**
