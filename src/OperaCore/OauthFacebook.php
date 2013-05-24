@@ -51,7 +51,8 @@ class OauthFacebook implements Oauth
 	 */
 	public function getUserFriends()
 	{
-		return $this->provider->api( '/me/friends' );
+		$friends = $this->provider->api( '/me/friends?fields=first_name,name,gender,locale,birthday' );
+        return isset( $friends['data'] ) ? $friends['data'] : array();
 	}
 
 
