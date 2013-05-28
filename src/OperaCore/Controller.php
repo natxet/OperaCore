@@ -109,6 +109,7 @@ abstract class Controller
 	 * @param $model string The model name
 	 *
 	 * @return Model A model class
+     * @throws \Exception
 	 */
 	protected function getModel( $model )
 	{
@@ -304,6 +305,22 @@ abstract class Controller
 		}
 		return $param;
 	}
+
+    protected function getAllQuery() {
+        return $this->container['Request']->query->all();
+    }
+
+    protected function getAllRequest() {
+        return $this->container['Request']->request->all();
+    }
+
+    protected function getQuery( $key ) {
+        return $this->container['Request']->query->get( $key );
+    }
+
+    protected function getRequest( $key ) {
+        return $this->container['Request']->request->get( $key );
+    }
 
 	/**
 	 * @param \Symfony\Component\HttpFoundation\Response $response
