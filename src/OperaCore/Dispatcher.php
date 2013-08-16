@@ -25,8 +25,14 @@ class Dispatcher
 
 			Profile::Checkpoint( 'Preparing 404 Controller' );
 
-			$controller->action404( array() );
+			$controller->action404();
 		}
+        catch( \OperaCore\Exception\Forbidden $e )
+        {
+            $controller = $this->getController( 'Error', $c );
+            Profile::Checkpoint( 'Preparing 403 Controller' );
+            $controller->action403();
+        }
 		catch( \Exception $e )
 		{
 			/*
@@ -46,7 +52,7 @@ class Dispatcher
 
 			$class_name = '\\' . APP . '\\Controller\\' . 'Error';
 			$controller = new $class_name( $c );
-			$controller->action500( array('message' => $e->getMessage() ) );
+			$controller->action500( $e->getMessage() );
 
 		}
 

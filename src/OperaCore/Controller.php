@@ -106,14 +106,15 @@ abstract class Controller
 	}
 
 	/**
-	 * @param $model string The model name
+	 * @param $model string The model name.
+     * @param $app string The string of the app, if you want to load another apps model. Default: current APP
 	 *
 	 * @return Model A model class
      * @throws \Exception
 	 */
-	protected function getModel( $model )
+	protected function getModel( $model, $app = APP )
 	{
-		$class_name = '\\' . APP . '\\Model\\' . $model;
+        $class_name = '\\' . $app . '\\Model\\' . $model;
         if(!class_exists( $class_name)) {
             throw new \Exception( "Class $class_name does not exist" );
         }
@@ -122,6 +123,7 @@ abstract class Controller
 
 	protected function getPath( $route_key, $params = array(), $absolute = true )
 	{
+        // TO-DO: si estamos con profiler activado, mostrar el path con profiler
 		return $this->container['Router']->getPath( $route_key, $params, $absolute );
 	}
 
@@ -235,7 +237,7 @@ abstract class Controller
 				'status'      => $status,
 				'destination' => $destination
 			);
-			$this->render( 'redirectionDebug.html.twig' );
+			$this->render( 'RedirectionDebug.twig' );
 			if (isset( $_SESSION )) var_dump( $_SESSION );
 		} else {
 			$this->setResponse( new \Symfony\Component\HttpFoundation\RedirectResponse( $destination, $status ) );

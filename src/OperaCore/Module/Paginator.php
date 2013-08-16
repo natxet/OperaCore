@@ -28,7 +28,7 @@ class Paginator extends \OperaCore\Controller
 
 		$this->context['pagination'] = $pagination_params;
 		$this->context['base_url']   = $base_url;
-		return $this->render( 'pagination.html.twig', parent::TEMPLATE_RENDER_RETURN );
+		return $this->render( 'Pagination.twig', parent::TEMPLATE_RENDER_RETURN );
 	}
 
 	/**

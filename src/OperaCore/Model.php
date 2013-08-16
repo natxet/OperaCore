@@ -22,6 +22,24 @@ abstract class Model
 		$this->container = $c;
 	}
 
+    public function dump( $statement, $params, $die = true )
+    {
+        foreach ($params as $k => $v) {
+            if (!is_numeric( $v )) {
+                $params[$k] = "'$v'";
+            }
+            if (is_null( $v )) {
+                $params[$k] = "NULL";
+            }
+        }
+        echo "<pre>";
+        var_dump( str_replace( array_keys( $params ), array_values( $params ), $statement ) );
+        echo "</pre>";
+        if ($die) {
+            die();
+        }
+    }
+
     /**
      * @param string $statement SQL statement
      * @param string $profile write or read
@@ -179,7 +197,7 @@ abstract class Model
 		foreach( $optional as $field => $type )
 		{
 			$final_params[$field] = isset( $params[$field] ) ?
-				$this->prepare_param_type( $params[$field], $type ) : NULL;
+				$this->prepare_param_type( $params[$field], $type ) : null;
 
 		}
 
@@ -194,5 +212,56 @@ abstract class Model
 			default: return $param;
 		}
 	}
+
+
+    /**
+     * @param        $id            the unique ID of the row
+     * @param array  $fields_values array with associative array ['field':'value', 'field2':'value2']
+     * @param string $id_field      the name of the ID field (normally, just 'id')
+     * @param array  $white_list    if set, an array with the name of valid fields: all others will be ignored
+     * @param array  $black_list    if set, an array with the name of invalid fields: all others will be ignored
+     *
+     * @return bool
+     */
+    protected function updateTableFields( $id, array $fields_values, $id_field = 'id', array $white_list = null, array $black_list = null  )
+    {
+
+        $sets        = array();
+        $bind_params = array( ":$id_field" => $id );
+
+        foreach ($fields_values as $field => $value) {
+
+            // checking in the white and black list
+            if ( !empty( $white_list ) && !in_array( $field, $white_list )
+               || !empty( $black_list ) && in_array( $field, $black_list )) {
+
+                continue;
+            }
+
+            $sets[] = "$field = :$field";
+
+            if (empty( $value )) {
+                $value = null;
+            }
+
+            $bind_params[":$field"] = $value;
+        }
+
+        if (empty( $sets )) {
+            return false;
+        }
+        $sets = implode( "\n    , ", $sets );
+
+        $sql = <<<QUERY
+UPDATE
+    schools
+SET
+    $sets
+WHERE
+    $id_field = :$id_field
+LIMIT 1
+QUERY;
+        return $this->write( $sql, $bind_params );
+    }
 }
 

@@ -31,6 +31,6 @@ class Profile extends \OperaCore\Controller
 			'globals' => $globals,
 			'slow_query_miliseconds' => 300
 		);
-		$this->render( 'profile.html.twig' );
+		$this->render( 'Profile.twig' );
 	}
 }
