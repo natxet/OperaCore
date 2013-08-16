@@ -1,0 +1,10 @@
+{% if not id %}{% set id = 'form_' ~ form_id ~ '_' ~ name %}{% endif %}
+{% if not type %}{% set type = 'text' %}{% endif %}
+{% if not class and input_class %}{% set class = input_class %}{% endif %}
+{% set field_template = 'Field/' ~ type ~ '.twig' %}
+<div class="control-group">
+    <label class="control-label"{% if id %} for="{{ id }}"{% endif %}>{{ label }}</label>
+    <div class="controls">
+        {% include [include_path ~ field_template, 'OperaForm/' ~ field_template] ignore missing %}
+    </div>
+</div>

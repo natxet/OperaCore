@@ -1,0 +1,34 @@
+{% if not include_path %}{% set include_path = '' %}{% endif %}
+
+<form {% if id %}id="{{ id }}"{% endif %}
+      method="{{ method }}" action="{{ action }}" class="{{ class }}"
+        {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}>
+
+    {% for fieldset in fieldsets %}
+        <fieldset
+                {% if fieldset.id %} id="{{ fieldset.id }}"{% endif %}
+                {% if fieldset.class %} class="{{ fieldset.class }}"{% endif %}
+
+                >
+            {% if fieldset.legend %}
+                <legend{% if fieldset.icon %} class="glyphicons {{ fieldset.icon }}"{% endif %}>
+                    <i></i>{{ fieldset.legend }}
+                </legend>
+            {% endif %}
+            {% for name,field in fieldset.fields %}
+                {% set field = field|merge({'include_path': include_path}) %}
+                {% set field = field|merge({'form_id': id}) %}
+                {% if input_class %}
+                    {% set field = field|merge({'input_class': input_class}) %}
+                {% endif %}
+
+                {% include [include_path ~ 'ControlGroup.twig', 'OperaForm/ControlGroup.twig' ] with field only %}
+            {% endfor %}
+        </fieldset>
+    {% endfor %}
+
+    {% block actions_separator %}{% endblock %}
+    {% block submit_button %}<input type="submit"/>{% endblock %}
+    {% block reset_button %}<input type="reset"/>{% endblock %}
+
+</form><!-- END form {% if id %}id="{{ id }}"{% endif %} -->

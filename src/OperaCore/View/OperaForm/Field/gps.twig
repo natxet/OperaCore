@@ -1,0 +1,16 @@
+latitude: <input
+        type="text"
+        name="{{ name }}[lat]"
+        value="{{ value.lat }}"
+        {% if id %}id="{{ id }}_lat" {% endif %}
+        {% if class %}class="{{ class }}"{% endif %}
+        {% if disabled %}disabled="disabled"{% endif %}
+        />
+longitude: <input
+        type="text"
+        name="{{ name }}[lon]"
+        value="{{ value.lon }}"
+        {% if id %}id="{{ id }}_lon" {% endif %}
+        {% if class %}class="{{ class }}"{% endif %}
+        {% if disabled %}disabled="disabled"{% endif %}
+        />

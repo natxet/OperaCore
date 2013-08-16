@@ -1,0 +1,12 @@
+{#
+    name: the name of the input, for getting it back as var name in the post/get
+    class: any additional class to style easily
+    values: array with the values in the form key => val
+    selected: the values to be selected , matching one key. ARRAY!!
+#}
+{% for value,label in values %}
+    <label>
+            <input type="checkbox" name="{{ name }}" class="{{ class }}" value="{{ value }}" {% if selected and value in selected %}checked="checked"{% endif %} />
+        {{ label }}
+    </label>
+{% endfor %}

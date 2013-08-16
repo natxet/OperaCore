@@ -1,0 +1,13 @@
+{#
+    name: the name of the input, for getting it back as var name in the post/get
+    class: any additional class to style easily
+    id: id for the field, if not set, not shown
+    values: array with the values in the form key => val
+    selected: the value to be selected , matching one key
+#}
+{% for value,label in values %}
+    <label>
+            <input type="radio" {% if id %}id="{{ id }}" {% endif %}name="{{ name }}" class="{{ class }}" value="{{ value }}" {% if selected and value == selected %}checked="checked"{% endif %} />
+        {{ label }}
+    </label>
+{% endfor %}

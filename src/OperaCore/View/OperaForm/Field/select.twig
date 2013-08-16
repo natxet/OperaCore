@@ -1,0 +1,27 @@
+{#
+    name: the name of the input, for getting it back as var name in the post/get
+    class: any additional class to style easily
+    values: array with the values in the form key => val
+    value: if a single value is given (string)
+    selected: the values to be selected , matching one key MUST BE AN ARRAY 'selected': [ value ]
+    mandatory: if it's not mandatory, will show a first option (BOOL)
+    first_option: if setted, the text to appear as first option, only if not mandatory f.i. (escoja or España)
+    first_value: if setted, the value to appear as first option, only if not mandatory f.i. (es)
+    multiple: if it's multiple select (BOOL)
+    size: num of rows shown
+    placeholder: the placeholder text (optional)
+#}
+<select name="{{ name }}"
+        class="{% block class %}{{ class }}{% endblock %}"
+        {% if placeholder %} placeholder="{{ placeholder }}"{% endif %}
+        {% if multiple %}multiple{% endif %} {% if size %}size="{{ size }}"{% endif %}
+        {% block extra_attributes %}{% endblock %}>
+    {% if not mandatory %}
+        <option value="{{ first_value }}">{{ first_option }}</option>
+    {% endif %}
+    {% for key,label in values %}
+        <option value="{{ key }}"
+                {% if key and ( key in selected or key == value ) %}selected="selected"{% endif %}
+                >{{ label }}</option>
+    {% endfor %}
+</select>
