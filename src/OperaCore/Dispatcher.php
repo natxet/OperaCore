@@ -31,6 +31,7 @@ class Dispatcher
         {
             $controller = $this->getController( 'Error', $c );
             Profile::Checkpoint( 'Preparing 403 Controller' );
+            $controller->addMessage($e->getMessage(), Controller::TEMPLATE_MESSAGE_ERROR);
             $controller->action403();
         }
 		catch( \Exception $e )
