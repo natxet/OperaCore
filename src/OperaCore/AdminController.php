@@ -24,7 +24,7 @@ abstract class AdminController extends Controller
      */
     protected function getAuthUser()
     {
-        return $this->getSessionVar($this->session_key);
+        return $this->getSessionVar( $this->session_key );
     }
 
     /**
@@ -32,7 +32,7 @@ abstract class AdminController extends Controller
      */
     protected function setAuthUser( array $user_data )
     {
-        $this->setSessionVar($this->session_key, $user_data);
+        $this->setSessionVar( $this->session_key, $user_data );
     }
 
     /**
@@ -40,7 +40,7 @@ abstract class AdminController extends Controller
      */
     protected function unSetAuthUser()
     {
-        $this->unsetSessionVar($this->session_key);
+        $this->unsetSessionVar( $this->session_key );
     }
 
     /**
@@ -85,7 +85,7 @@ abstract class AdminController extends Controller
     public function action( $action, $params = array(), $route_key = '' )
     {
         if (!in_array( $action, $this->whitelisted_actions ) && !$this->isAuthenticated()) {
-            throw new \OperaCore\Exception\Forbidden();
+            throw new \OperaCore\Exception\Forbidden('Enter username and password to continue.');
         }
         parent::action( $action, $params = array(), $route_key = '' );
     }
