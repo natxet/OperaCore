@@ -14,3 +14,5 @@ longitude: <input
         {% if class %}class="{{ class }}"{% endif %}
         {% if disabled %}disabled="disabled"{% endif %}
         />
+<img class="gps_map" src="http://maps.googleapis.com/maps/api/staticmap?center={{ value.lat }},{{ value.lon }}&zoom=13&size=450x150&maptype=roadmap
+&markers={{ value.lat }},{{ value.lon }}&sensor=false" map>
