@@ -2,6 +2,8 @@
 
 namespace OperaCore;
 
+use \dflydev\markdown\MarkdownParser;
+
 abstract class Controller
 {
 	const TEMPLATE_RENDER_RETURN = 0;
@@ -130,6 +132,32 @@ abstract class Controller
     public function addContext( $key, $value)
     {
         $this->context[$key] = $value;
+    }
+
+    public function parseMarkdownTemplate( $template_name, array $context = array() )
+    {
+        $markdown_filename = APP_PATH . Bootstrap::VIEW_REL_PATH . '/' . $template_name;
+        return $this->parseMarkdownFile( $markdown_filename, $context );
+    }
+
+    public function parseMarkdownFile( $markdown_filename, array $context = array() )
+    {
+        if(!is_readable($markdown_filename)) throw new Exception\PageNotFound();
+        return $this->parseMarkdown( file_get_contents( $markdown_filename ), $context );
+    }
+
+    public function parseMarkdown( $markdown, array $context = array() )
+    {
+        $parser = new MarkdownParser();
+        $rendered = $this->renderString($markdown, $context);
+        return $parser->transformMarkdown( $rendered );
+
+    }
+
+    public function renderString($string, array $context = array())
+    {
+        $template = new Template($this->container, new \Twig_Loader_String());
+        return $template->render($string, $context);
     }
 
 	protected function render( $template, $print = true )
