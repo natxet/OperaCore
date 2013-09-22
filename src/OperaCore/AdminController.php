@@ -87,7 +87,7 @@ abstract class AdminController extends Controller
         if (!in_array( $action, $this->whitelisted_actions ) && !$this->isAuthenticated()) {
             throw new \OperaCore\Exception\Forbidden('Enter username and password to continue.');
         }
-        parent::action( $action, $params = array(), $route_key = '' );
+        parent::action( $action, $params, $route_key = '' );
     }
 
 }
