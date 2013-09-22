@@ -98,7 +98,7 @@ abstract class Model
 	 *
 	 * @return array Associative array with all the results
 	 */
-	public function fetchAll( $statement, $params = array(), $profile = 'read' )
+	public function fetchAll( $statement, $params = array(), $profile = 'read', $fetch_argument = \PDO::FETCH_ASSOC )
 	{
 		$offset = microtime( true );
 
@@ -106,12 +106,25 @@ abstract class Model
 
 		$sth = $db->prepare( $statement );
 		$sth->execute( $params );
-		$res = $sth->fetchAll( \PDO::FETCH_ASSOC );
+		$res = $sth->fetchAll( $fetch_argument );
 
 		$this->profile_collect( $offset,  $statement, $params, $profile );
 
 		return $res;
 	}
+
+    /**
+     * Fetches all the results, but only one column
+     * @param        $statement
+     * @param array  $params
+     * @param string $profile
+     *
+     * @return array
+     */
+    public function fetchAllColumn( $statement, $params = array(), $profile = 'read' )
+    {
+        return $this->fetchAll( $statement, $params, $profile, \PDO::FETCH_COLUMN );
+    }
 
 	/**
 	 * @param $statement    string The SQL statement to execute
@@ -120,7 +133,7 @@ abstract class Model
 	 *
 	 * @return array Associative array with the first result
 	 */
-	public function fetchOne( $statement, $params = array(), $profile = 'read' )
+	public function fetchOne( $statement, $params = array(), $profile = 'read', $fetch_argument = \PDO::FETCH_ASSOC )
 	{
 		$offset = microtime( true );
 
@@ -128,12 +141,13 @@ abstract class Model
 
 		$sth = $db->prepare( $statement );
 		$sth->execute( $params );
-		$res = $sth->fetch( \PDO::FETCH_ASSOC );
+		$res = $sth->fetch( $fetch_argument );
 
 		$this->profile_collect( $offset,  $statement, $params, $profile );
 
 		return $res;
 	}
+
 
     public function fetchKeyVal( $statement, $key = 0, $val = 1 , $params = array(), $profile = 'read')
     {
