@@ -96,15 +96,10 @@ abstract class Controller
 	 */
 	public function action( $action, $params = array(), $route_key = '' )
 	{
-        try {
-            $method          = "action$action";
-            $this->route_key = $route_key;
-            $this->params    = $params;
-            $this->$method( $params );
-        }
-        catch( Exception $e ) {
-            var_dump($e->getTraceAsString());die;
-        }
+        $method          = "action$action";
+        $this->route_key = $route_key;
+        $this->params    = $params;
+        $this->$method( $params );
 	}
 
 	/**
