@@ -14,17 +14,13 @@ class Dispatcher
 			list( $controller, $action, $params, $route_key ) = $c['Router']->getRoute();
 
 			$controller = $this->getController( $controller, $c );
-
 			Profile::Checkpoint( 'Routing and Controller Construction' );
-
 			$controller->action( $action, $params, $route_key );
 		}
 		catch( \OperaCore\Exception\PageNotFound $e )
 		{
 			$controller = $this->getController( 'Error', $c );
-
 			Profile::Checkpoint( 'Preparing 404 Controller' );
-
 			$controller->action404();
 		}
         catch( \OperaCore\Exception\Forbidden $e )
@@ -36,11 +32,7 @@ class Dispatcher
         }
 		catch( \Exception $e )
 		{
-			/*
-			 * this means something really wrong happened
-			 * because getRoute failed
-			 */
-			error_log( $e->getMessage() . "\n >>> " . $e->getTraceAsString() );
+			error_log( "UNCAUGHT EXCEPTION IN OPERACORE: " . $e->getMessage() . "\n >>> " . $e->getTraceAsString() );
 
 			if ( defined( 'PROFILE' ) && PROFILE ) Profile::Collect(
 				'Exception', array(
