@@ -2,6 +2,10 @@
 
 namespace OperaCore;
 
+use natxet\NatxetTwigExtensions\Twig\Extension\PHPFunctionsExtension;
+use Aptoma\Twig\Extension\MarkdownEngine;
+use Aptoma\Twig\Extension\MarkdownExtension;
+
 /**
  * User: nacho
  * Date: 03/02/12
@@ -40,9 +44,9 @@ class Template extends \Twig_Environment
         $this->addGlobal( 'helper', new Helper() );
         $this->addExtension( new \Twig_Extensions_Extension_I18n() );
 
-        $this->addExtension( new \natxet\NatxetTwigExtensions\Twig\Extension\PHPFunctionsExtension() );
-        $parser = new \dflydev\markdown\MarkdownParser();
-        $this->addExtension( new \Aptoma\Twig\Extension\MarkdownExtension( $parser ) );
+        $this->addExtension( new PHPFunctionsExtension() );
+        $engine = new MarkdownEngine\DflydevMarkdownEngine();
+        $this->addExtension( new MarkdownExtension( $engine ) );
 
         if (DEBUG) {
             $this->addExtension( new \Twig_Extensions_Extension_Debug() );
