@@ -1,0 +1,25 @@
+{#
+    name: the name of the input, for getting it back as var name in the post/get
+    value: value of the field
+    id: id for the field, if not set, not shown
+    class: any additional class to style easily
+    placeholder: the placeholder text (optional)
+    disabled: true if disabled
+    append: before, normally
+#}
+{% if append %}
+<div class="input-append">
+    <span class="add-on">{{ append }}</span>
+{% endif %}
+<input
+        type="{% block input_type %}text{% endblock %}"
+        name="{{ name }}"
+        value="{{ value }}"
+        {% if id %}id="{{ id }}" {% endif %}
+        {% if class %}class="{{ class }}"{% endif %}
+        {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
+        {% if disabled %}disabled="disabled"{% endif %}
+        />
+{% if append %}
+</div>
+{% endif %}
