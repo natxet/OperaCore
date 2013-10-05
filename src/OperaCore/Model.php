@@ -56,10 +56,18 @@ abstract class Model
     {
         $offset = microtime( true );
 
-        $res = $sth->execute( $params );
-        $affected_rows = $sth->rowCount();
+        try {
 
-        $this->profile_collect( $offset, $sth->queryString, $params );
+            $res = $sth->execute( $params );
+            $affected_rows = $sth->rowCount();
+
+            $this->profile_collect( $offset, $sth->queryString, $params );
+        }
+        catch (\Exception $e) {
+
+            $this->profile_collect( $offset, $sth->queryString, $params );
+            throw $e;
+        }
 
         return $affected_rows;
     }
@@ -104,14 +112,31 @@ abstract class Model
 
 		$db = $this->db->$profile;
 
-		$sth = $db->prepare( $statement );
-		$sth->execute( $params );
-		$res = $sth->fetchAll( $fetch_argument );
+        $this->addNoCache( $statement );
 
-		$this->profile_collect( $offset,  $statement, $params, $profile );
+        try {
+
+            $sth = $db->prepare( $statement );
+            $sth->execute( $params );
+            $res = $sth->fetchAll( $fetch_argument );
+
+            $this->profile_collect( $offset,  $statement, $params, $profile );
+        }
+        catch (\Exception $e) {
+
+            $this->profile_collect( $offset,  $statement, $params, $profile );
+            throw $e;
+        }
 
 		return $res;
 	}
+
+    protected function addNoCache( &$statement )
+    {
+        if ('dev' === ENV && preg_match( '/^SELECT/', trim( $statement ) )) {
+            $statement = str_replace( 'SELECT', 'SELECT SQL_NO_CACHE', $statement );
+        }
+    }
 
     /**
      * Fetches all the results, but only one column
@@ -139,12 +164,21 @@ abstract class Model
 
 		$db = $this->db->$profile;
 
-		$sth = $db->prepare( $statement );
-		$sth->execute( $params );
-		$res = $sth->fetch( $fetch_argument );
+        $this->addNoCache( $statement );
 
-		$this->profile_collect( $offset,  $statement, $params, $profile );
+        try {
 
+            $sth = $db->prepare( $statement );
+            $sth->execute( $params );
+            $res = $sth->fetch( $fetch_argument );
+
+            $this->profile_collect( $offset,  $statement, $params, $profile );
+        }
+        catch (\Exception $e) {
+
+            $this->profile_collect( $offset,  $statement, $params, $profile );
+            throw $e;
+        }
 		return $res;
 	}
 
