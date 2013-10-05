@@ -115,7 +115,6 @@ abstract class Model
         $this->addNoCache( $statement );
 
         try {
-
             $sth = $db->prepare( $statement );
             $sth->execute( $params );
             $res = $sth->fetchAll( $fetch_argument );
@@ -134,7 +133,7 @@ abstract class Model
     protected function addNoCache( &$statement )
     {
         if ('dev' === ENV && preg_match( '/^SELECT/', trim( $statement ) )) {
-            $statement = str_replace( 'SELECT', 'SELECT SQL_NO_CACHE', $statement );
+            $statement = preg_replace( '/^(SELECT)/', 'SELECT SQL_NO_CACHE', $statement );
         }
     }
 
