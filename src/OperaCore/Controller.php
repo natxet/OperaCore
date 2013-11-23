@@ -270,11 +270,11 @@ abstract class Controller
 		die();
 	}
 
-	protected function paginator( $base_url, $total_rows, $current_page, $results_per_page, $num_pages = null )
+	protected function paginator( $base_url, $total_rows, $current_page, $results_per_page, $num_pages = null, $list_type = 'ol' )
 	{
 		$paginator = new \OperaCore\Module\Paginator( $this->container );
 
-		return $paginator->getHtml( $base_url, $total_rows, $current_page, $results_per_page, $num_pages );
+		return $paginator->getHtml( $base_url, $total_rows, $current_page, $results_per_page, $num_pages, $list_type );
 	}
 
 	public function addMessage( $message, $type = self::TEMPLATE_MESSAGE_INFO )

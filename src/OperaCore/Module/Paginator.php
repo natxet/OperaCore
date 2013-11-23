@@ -20,7 +20,7 @@ class Paginator extends \OperaCore\Controller
 	 * @param $results_per_page int
 	 * @return bool|string A string if the Template is correctly rendered
 	 */
-	public function getHtml( $base_url, $total_rows, $current_page, $results_per_page, $num_pages = NULL )
+	public function getHtml( $base_url, $total_rows, $current_page, $results_per_page, $num_pages = NULL, $list_type = 'ol' )
 	{
 		$this->num_pages = $num_pages ? (int) $num_pages : self::DEFAULT_NUM_PAGES;
 		$pagination_params     = $this->paginate_get_array( $total_rows, $current_page, $results_per_page );
@@ -28,6 +28,7 @@ class Paginator extends \OperaCore\Controller
 
 		$this->context['pagination'] = $pagination_params;
 		$this->context['base_url']   = $base_url;
+        $this->context['list_type']  = $list_type;
 		return $this->render( 'Pagination.twig', parent::TEMPLATE_RENDER_RETURN );
 	}
 

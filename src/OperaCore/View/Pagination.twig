@@ -1,5 +1,5 @@
 <div class="pagination pagination-centered">
-	<ol>
+	<{{ list_type }}>
 		<li class="{% if not pagination.previous_page %}disabled{% endif %}">
 			<a href="{{base_url}}{{pagination.previous_page}}" class="previous">&larr;</a>
 		</li>
@@ -14,5 +14,5 @@
 		<li class="{% if not pagination.next_page %}disabled{% endif %}">
 			<a href="{{base_url}}{{pagination.next_page}}" class="next">&rarr;</a>
 		</li>
-	</ol>
+	</{{ list_type }}>
 </div>
