@@ -1,3 +1,8 @@
+{% set api_key = CONFIG['google_maps']['api_key'] %}
+{% if not id %}
+    {% set id = name %}
+{% endif %}
+
 latitude: <input
         type="text"
         name="{{ name }}[lat]"
@@ -14,5 +19,60 @@ longitude: <input
         {% if class %}class="{{ class }}"{% endif %}
         {% if disabled %}disabled="disabled"{% endif %}
         />
+<a class="btn btn-small" onclick="setGpsFromMap_{{ name }}();">< get from map</a>
+<!--
 <img class="gps_map" src="http://maps.googleapis.com/maps/api/staticmap?center={{ value.lat }},{{ value.lon }}&zoom=13&size=450x150&maptype=roadmap
-&markers={{ value.lat }},{{ value.lon }}&sensor=false" map>
+&markers={{ value.lat }},{{ value.lon }}&sensor=false" map>-->
+
+<div class="gps_controls" style="padding: 10px 0;">
+<input type="text" id="{{ name }}_address2" value="{{ address }}" /> <a class="btn btn-small" onclick="centerMapToAddress_{{ name }}()">search in map ></a>
+</div>
+<div id="map-canvas-{{ name }}" style="height:300px;width:400px;"/>
+
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&sensor=false">
+</script>
+<script type="text/javascript">
+
+    var geocoder;
+    var map_{{ name }};
+    var map_center_marker_{{ name }};
+
+    function initialize_{{ name }}() {
+        geocoder = new google.maps.Geocoder();
+        var myLatlng = new google.maps.LatLng({{ value.lat }}, {{ value.lon }});
+        var mapOptions = {
+            center: myLatlng,
+            zoom: 15,
+            disableDefaultUI: true,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        map_{{ name }} = new google.maps.Map(document.getElementById("map-canvas-{{ name }}"), mapOptions);
+        map_center_marker_{{ name }} = new google.maps.Marker({
+            position: myLatlng,
+            map: map_{{ name }}
+        });
+        google.maps.event.addListener(map_{{ name }}, 'bounds_changed', function() {
+            map_center_marker_{{ name }}.setPosition(map_{{ name }}.getCenter());
+        });
+    }
+    google.maps.event.addDomListener(window, 'load', initialize_{{ name }});
+
+    function setGpsFromMap_{{ name }}() {
+        var position = map_center_marker_{{ name }}.getPosition();
+        document.getElementById("{{ id }}_lat").value = position.lat();
+        document.getElementById("{{ id }}_lon").value = position.lng();
+    }
+
+    function centerMapToAddress_{{ name }}() {
+        var address = document.getElementById('{{ name }}_address2').value;
+        geocoder.geocode( { 'address': address}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                map_{{ name }}.setCenter(results[0].geometry.location);
+            } else {
+                alert('Centering to address was not successful for the following reason: ' + status);
+            }
+        });
+    }
+</script>
+
