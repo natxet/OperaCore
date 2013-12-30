@@ -30,28 +30,38 @@ class I18n
 		$this->definitions( $c );
 	}
 
+    /**
+     * Gets the browsers preferred locale (f.i. en_US) only if it's in the site accepted locales (at least if the
+     * first two letters of the browsers preferred locales match with any site locales first two letters)
+     *
+     * @param $c Container
+     *
+     * @return null|string
+     */
+    static function getCompatibleBrowserLocale( Container $c )
+    {
+        $browser_languages = $c['Request']->getLanguages();
+        $site_locales      = array_keys( $c['Config']->get( 'main', 'locales_names' ) );
 
-	/**
-	 * @param $request \Symfony\Component\HttpFoundation\Request
-	 * @param $config Config
-	 * @return null|string
-	 */
-	public function getBrowserLanguage( $request, $config )
-	{
-		$accepted_languages = $request->getLanguages();
+        $site_languages = array(); // in a two-char format: not the whole locale format
+        foreach ($site_locales as $l) {
+            $site_languages[$l]                 = $l;
+            $site_languages[substr( $l, 0, 2 )] = $l;
+        }
 
-		$langs = array();
-		foreach( array_keys( $config->get( 'main', 'locales_names' ) ) as $l) {
-			$langs[$l] = $l;
-			$langs[substr( $l, 0, 2 )] = $l;
-		}
+        foreach ($browser_languages as $possible_locale) {
+            if (array_key_exists( $possible_locale, $site_locales )) {
+                return $possible_locale;
+            }
 
-		foreach( $accepted_languages as $possible_language )
-		{
-			if( array_key_exists($possible_language, $langs)) return $langs[$possible_language];
-		}
-		return NULL;
-	}
+            $possible_language = substr( $possible_locale, 0, 2 );
+            if (array_key_exists( $possible_language, $site_languages )) {
+                return $site_languages[$possible_language];
+            }
+        }
+
+        return null;
+    }
 
 	/**
 	 * @param $c
