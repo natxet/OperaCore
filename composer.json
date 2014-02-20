@@ -24,7 +24,7 @@
 		"symfony/class-loader": "*",
 		"natxet/CssMin": "*",
 		"tedivm/jshrink": "*",
-		"pimple/pimple": "*",
+		"pimple/pimple": "1.*",
 		"twig/twig": "*",
 		"twig/extensions": "*",
 		"swiftmailer/swiftmailer": "4.1.*",
