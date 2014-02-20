@@ -1,6 +1,6 @@
 {
 	"name": "natxet/OperaCore",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"type": "library",
 	"description": "The core of the Opera PHP Framework, based on Symfony components. MVC + i18n everywhere",
 	"keywords": ["symfony","php","frameworks"],
@@ -20,21 +20,27 @@
 	},
 	"require": {
 		"php": ">=5.3",
-		"symfony/http-foundation": "*",
-		"symfony/class-loader": "*",
-		"natxet/CssMin": "*",
-		"tedivm/jshrink": "*",
+		"symfony/http-foundation": "2.*",
+		"symfony/class-loader": "2.*",
+		"natxet/CssMin": "dev-master",
+		"tedivm/jshrink": "v0.*",
 		"pimple/pimple": "1.*",
-		"twig/twig": "*",
-		"twig/extensions": "*",
+		"twig/twig": "1.*",
+		"twig/extensions": "1.*",
 		"swiftmailer/swiftmailer": "4.1.*",
-		"natxet/natxet-twig-extensions": "*",
+		"natxet/natxet-twig-extensions": "dev-master",
 		"aptoma/twig-markdown": "dev-master",
-		"dflydev/markdown": "~1.0",
+		"dflydev/markdown": "1.0.*@dev",
 		"facebook/php-sdk": "dev-master"
 	},
 	"autoload": {
 		"psr-0": { "OperaCore": "src" }
-	}
+	},
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.2.2-dev"
+        }
+    }
 }
 
