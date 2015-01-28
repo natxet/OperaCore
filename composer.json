@@ -1,6 +1,6 @@
 {
 	"name": "natxet/OperaCore",
-	"version": "0.2.5",
+	"version": "0.2.6",
 	"type": "library",
 	"description": "The core of the Opera PHP Framework, based on Symfony components. MVC + i18n everywhere",
 	"keywords": ["symfony","php","frameworks"],
@@ -30,7 +30,7 @@
 		"swiftmailer/swiftmailer": "4.1.*",
 		"natxet/natxet-twig-extensions": "dev-master",
 		"aptoma/twig-markdown": "dev-master",
-		"michelf/php-markdown": "dev-master",
+		"michelf/php-markdown": "1.4.1",
 		"facebook/php-sdk": "dev-master"
 	},
 	"autoload": {
@@ -39,7 +39,7 @@
     "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
-            "dev-master": "0.2.5-dev"
+            "dev-master": "0.2.6-dev"
         }
     }
 }
