@@ -45,7 +45,7 @@ class Template extends \Twig_Environment
         $this->addExtension( new \Twig_Extensions_Extension_I18n() );
 
         $this->addExtension( new PHPFunctionsExtension() );
-        $engine = new MarkdownEngine\DflydevMarkdownEngine();
+        $engine = new MarkdownEngine\MichelfMarkdownEngine();
         $this->addExtension( new MarkdownExtension( $engine ) );
 
         if (DEBUG) {

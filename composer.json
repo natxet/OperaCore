@@ -30,7 +30,7 @@
 		"swiftmailer/swiftmailer": "4.1.*",
 		"natxet/natxet-twig-extensions": "dev-master",
 		"aptoma/twig-markdown": "dev-master",
-		"dflydev/markdown": "1.0.*@dev",
+		"michelf/php-markdown": "1.0.*@dev",
 		"facebook/php-sdk": "dev-master"
 	},
 	"autoload": {
