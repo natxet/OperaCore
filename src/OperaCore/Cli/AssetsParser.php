@@ -234,7 +234,11 @@ class AssetsParser extends \OperaCore\CliScript
 	{
 		// /e modifier makes second parameter evaluated
 		// this regex substitutes {{path.css}} with the path in the main.ini
-		return preg_replace( '/{{path\.(.+?)}}/e', "self::getAssetPath( '\\1' )", $string );
+		// changed to preg_replace_callback, maintaining old code for doc
+		// return preg_replace( '/{{path\.(.+?)}}/e', "self::getAssetPath( '\\1' )", $string );
+		return preg_replace_callback( '/{{path\.(.+?)}}/', function($matches) {
+			return self::getAssetPath( $matches[1] );
+		}, $string );
 	}
 
 	/**
